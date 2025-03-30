@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comprehensive Vibe Engine Demo</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <header>
+      <h1>Vibe Engine</h1>
+      <p class="subtitle">Comprehensive interactive demonstration of the vibe engineering system</p>
+      
+      <nav class="main-nav">
+        <button class="nav-button active" data-view="explorer">Vibe Explorer</button>
+        <button class="nav-button" data-view="visualizer">Visualizer</button>
+        <button class="nav-button" data-view="translator">Cross-Domain Translator</button>
+        <button class="nav-button" data-view="examples">Domain Examples</button>
+        <button class="nav-button" data-view="about">About</button>
+      </nav>
+    </header>
+
+    <main>
+      <div class="view-container active" id="explorer-view">
+        <div class="unified-interface">
+          <div class="top-row">
+            <div class="dimension-group">
+              <h3>Temporal Dimensions</h3>
+              <div class="slider-container">
+                <label for="temporal-pace">Pace</label>
+                <input type="range" id="temporal-pace" min="0" max="100" value="50" class="slider">
+                <div class="slider-labels">
+                  <span>Slow</span>
+                  <span>Fast</span>
+                </div>
+              </div>
+              
+              <div class="slider-container">
+                <label for="temporal-rhythm">Rhythm</label>
+                <input type="range" id="temporal-rhythm" min="0" max="100" value="50" class="slider">
+                <div class="slider-labels">
+                  <span>Regular</span>
+                  <span>Irregular</span>
+                </div>
+              </div>
+              
+              <div class="slider-container">
+                <label for="temporal-density">Density</label>
+                <input type="range" id="temporal-density" min="0" max="100" value="50" class="slider">
+                <div class="slider-labels">
+                  <span>Sparse</span>
+                  <span>Dense</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="dimension-group">
+              <h3>Energy Dimensions</h3>
+              <div class="slider-container">
+                <label for="energy-intensity">Intensity</label>
+                <input type="range" id="energy-intensity" min="0" max="100" value="50" class="slider">
+                <div class="slider-labels">
+                  <span>Calm</span>
+                  <span>Energetic</span>
+                </div>
+              </div>
+              
+              <div class="slider-container">
+                <label for="energy-flow">Flow</label>
+                <input type="range" id="energy-flow" min="0" max="100" value="50" class="slider">
+                <div class="slider-labels">
+                  <span>Staccato</span>
+                  <span>Flowing</span>
+                </div>
+              </div>
+              
+              <div class="slider-container">
+                <label for="energy-stability">Stability</label>
+                <input type="range" id="energy-stability" min="0" max="100" value="50" class="slider">
+                <div class="slider-labels">
+                  <span>Chaotic</span>
+                  <span>Stable</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="dimension-group">
+              <h3>Sensory Dimensions</h3>
+              <div class="slider-container">
+                <label for="sensory-brightness">Brightness</label>
+                <input type="range" id="sensory-brightness" min="0" max="100" value="50" class="slider">
+                <div class="slider-labels">
+                  <span>Dark</span>
+                  <span>Bright</span>
+                </div>
+              </div>
+              
+              <div class="slider-container">
+                <label for="sensory-warmth">Warmth</label>
+                <input type="range" id="sensory-warmth" min="0" max="100" value="50" class="slider">
+                <div class="slider-labels">
+                  <span>Cool</span>
+                  <span>Warm</span>
+                </div>
+              </div>
+              
+              <div class="slider-container">
+                <label for="sensory-texture">Texture</label>
+                <input type="range" id="sensory-texture" min="0" max="100" value="50" class="slider">
+                <div class="slider-labels">
+                  <span>Smooth</span>
+                  <span>Rough</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bottom-row">
+            <div class="presets-section">
+              <h3>Preset Vibes</h3>
+              <div class="preset-buttons">
+                <button class="preset-button" data-preset="cozyReading">Cozy Reading</button>
+                <button class="preset-button" data-preset="urbanNightclub">Nightclub</button>
+                <button class="preset-button" data-preset="zenGarden">Zen Garden</button>
+                <button class="preset-button" data-preset="startupOffice">Office</button>
+                <button class="preset-button" data-preset="jazzClub">Jazz Club</button>
+                <button class="preset-button" data-preset="tropicalBeach">Beach</button>
+              </div>
+            </div>
+            
+            <div class="vibe-description">
+              <h3>Current Vibe</h3>
+              <p id="vibe-description-text">
+                A balanced, neutral vibe with moderate energy and pace. Adjust the sliders to see how different parameters affect the visualization.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="view-container" id="visualizer-view">
+        <h2>Vibe Visualizer</h2>
+        <p class="section-intro">Visual representation of the current vibe parameters across different visualization methods.</p>
+        
+        <div class="visualization-section">
+          <div class="viz-controls">
+            <div class="tab-buttons">
+              <button class="tab-button active" data-tab="color-texture">Color & Texture</button>
+              <button class="tab-button" data-tab="radar-chart">Radar Chart</button>
+              <button class="tab-button" data-tab="domain-translation">Domain Translation</button>
+            </div>
+          </div>
+          
+          <div class="visualization-container">
+            <div class="visualization-tab active" id="color-texture-tab">
+              <div class="canvas-container">
+                <canvas id="color-canvas" width="800" height="600"></canvas>
+                <canvas id="texture-canvas" width="800" height="600"></canvas>
+              </div>
+            </div>
+            
+            <div class="visualization-tab" id="radar-chart-tab">
+              <div class="radar-container">
+                <canvas id="radar-chart" width="700" height="600"></canvas>
+              </div>
+            </div>
+
+            <div class="visualization-tab" id="domain-translation-tab">
+              <div class="domain-translation-container">
+                <div class="domain-grid">
+                  <div class="domain-card" id="music-domain">
+                    <h4>Music Domain</h4>
+                    <div id="music-description"></div>
+                  </div>
+                  <div class="domain-card" id="space-domain">
+                    <h4>Spatial Domain</h4>
+                    <div id="space-description"></div>
+                  </div>
+                  <div class="domain-card" id="visual-domain">
+                    <h4>Visual Domain</h4>
+                    <div id="visual-description"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="view-container" id="translator-view">
+        <h2>Cross-Domain Vibe Translator</h2>
+        <p class="section-intro">Translate vibes between different sensory domains while preserving their essential qualities.</p>
+        
+        <div class="translator-container">
+          <div class="translator-source">
+            <h3>Source Domain</h3>
+            <select id="source-domain-select">
+              <option value="music">Music</option>
+              <option value="space">Spatial Environment</option>
+              <option value="visual">Visual Art</option>
+              <option value="custom">Custom Vibe</option>
+            </select>
+            
+            <div id="source-presets-container">
+              <h4>Select Source Example</h4>
+              <select id="source-preset-select">
+                <option value="">Choose an example...</option>
+                <!-- Options populated by JavaScript -->
+              </select>
+              
+              <div class="source-preview" id="source-preview">
+                <p>Select a source to see its description</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="translator-arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48">
+              <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          
+          <div class="translator-target">
+            <h3>Target Domain</h3>
+            <select id="target-domain-select">
+              <option value="space">Spatial Environment</option>
+              <option value="visual">Visual Art</option>
+              <option value="music">Music</option>
+            </select>
+            
+            <button id="translate-button" class="action-button">Translate Vibe</button>
+          </div>
+        </div>
+        
+        <div class="translation-result" id="translation-result">
+          <h3>Translation Result</h3>
+          <p class="translation-instructions">Select source and target domains, then click "Translate Vibe" to see the result.</p>
+          <div id="result-content" class="hidden"></div>
+        </div>
+      </div>
+
+      <div class="view-container" id="examples-view">
+        <h2>Domain-Specific Vibe Examples</h2>
+        <p class="section-intro">Explore curated examples across different domains to understand how vibes translate between them.</p>
+        
+        <div class="domain-tabs">
+          <button class="domain-tab active" data-domain="music">Music</button>
+          <button class="domain-tab" data-domain="space">Spatial</button>
+          <button class="domain-tab" data-domain="visual">Visual</button>
+        </div>
+        
+        <div class="domain-content active" id="music-content">
+          <div class="examples-grid">
+            <div class="example-card" data-example="jazz">
+              <h3>Jazz Quartet</h3>
+              <p>Warm, intimate jazz in a small venue with acoustic instruments and improvisational elements.</p>
+              <button class="load-example-button">Load Example</button>
+            </div>
+            <div class="example-card" data-example="classical">
+              <h3>Classical Orchestra</h3>
+              <p>Refined, structured, and dynamic classical performance with rich instrumentation and formal composition.</p>
+              <button class="load-example-button">Load Example</button>
+            </div>
+            <div class="example-card" data-example="edm">
+              <h3>Electronic Dance Music</h3>
+              <p>High-energy, dense electronic music with repetitive patterns, synthetic sounds, and intense rhythmic elements.</p>
+              <button class="load-example-button">Load Example</button>
+            </div>
+            <div class="example-card" data-example="ambient">
+              <h3>Ambient Electronic</h3>
+              <p>Spacious, atmospheric electronic soundscapes with minimal rhythmic structure and a focus on texture and timbre.</p>
+              <button class="load-example-button">Load Example</button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="domain-content" id="space-content">
+          <div class="examples-grid">
+            <div class="example-card" data-example="forest">
+              <h3>Scandinavian Forest</h3>
+              <p>Cool, serene woodland with filtered light, organic textures, and a sense of peaceful isolation.</p>
+              <button class="load-example-button">Load Example</button>
+            </div>
+            <div class="example-card" data-example="cafe">
+              <h3>Busy Café</h3>
+              <p>Warm, energetic space with multiple conversations, movement, the scent of coffee, and background music.</p>
+              <button class="load-example-button">Load Example</button>
+            </div>
+            <div class="example-card" data-example="library">
+              <h3>Academic Library</h3>
+              <p>Quiet, structured environment with high ceilings, organized knowledge, diffused lighting, and muted sounds.</p>
+              <button class="load-example-button">Load Example</button>
+            </div>
+            <div class="example-card" data-example="beach">
+              <h3>Tropical Beach</h3>
+              <p>Bright, open setting with rhythmic waves, warm temperatures, organic textures, and a sense of freedom.</p>
+              <button class="load-example-button">Load Example</button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="domain-content" id="visual-content">
+          <div class="examples-grid">
+            <div class="example-card" data-example="impressionist">
+              <h3>Impressionist Painting</h3>
+              <p>Soft, textured brushwork with vibrant colors capturing momentary impressions of light and movement.</p>
+              <button class="load-example-button">Load Example</button>
+            </div>
+            <div class="example-card" data-example="bauhaus">
+              <h3>Bauhaus Design</h3>
+              <p>Clean, geometric, and functional with primary colors, balanced composition, and minimal ornamentation.</p>
+              <button class="load-example-button">Load Example</button>
+            </div>
+            <div class="example-card" data-example="cyberpunk">
+              <h3>Cyberpunk Aesthetic</h3>
+              <p>High contrast, neon-lit urban imagery with technological elements, grit, and futuristic elements in decay.</p>
+              <button class="load-example-button">Load Example</button>
+            </div>
+            <div class="example-card" data-example="ukiyoe">
+              <h3>Ukiyo-e Prints</h3>
+              <p>Flat, stylized compositions with clear outlines, block colors, and a balance of detail and simplicity.</p>
+              <button class="load-example-button">Load Example</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="view-container" id="about-view">
+        <h2>About the Vibe Engine</h2>
+        <p class="section-intro">An exploration of systematizing aesthetic experiences while respecting their ineffable qualities.</p>
+        
+        <div class="about-content">
+          <div class="about-section">
+            <h3>Core Concept</h3>
+            <p>The Vibe Engine is a framework for analyzing, deconstructing, and translating aesthetic experiences—or "vibes"—across different domains. It provides a structured vocabulary and mathematical model for what is often considered difficult to articulate.</p>
+            
+            <p>Rather than claiming to fully capture the ineffable quality of vibes, the engine acknowledges the tension between systematization and the resistance of vibes to categorization. It offers a tool for exploring this boundary—a map that is useful while recognizing it is not the territory.</p>
+          </div>
+          
+          <div class="about-section">
+            <h3>The Taxonomy</h3>
+            <p>Our approach uses seven core dimensions, each with multiple attributes:</p>
+            <ul>
+              <li><strong>Temporal:</strong> How time is perceived (pace, rhythm, density)</li>
+              <li><strong>Energy:</strong> The quality and flow of energy (intensity, flow, stability)</li>
+              <li><strong>Emotional:</strong> Feeling qualities (valence, arousal, intimacy)</li>
+              <li><strong>Conceptual:</strong> Intellectual dimensions (abstraction, temporal framing, complexity)</li>
+              <li><strong>Spatial:</strong> Physical perception (openness, geometry, depth)</li>
+              <li><strong>Cultural:</strong> Contextual elements (historicity, specificity, subculture)</li>
+              <li><strong>Sensory:</strong> Direct sensory elements (texture, brightness, warmth, color)</li>
+            </ul>
+          </div>
+          
+          <div class="about-section">
+            <h3>Cross-Domain Translation</h3>
+            <p>One of the core capabilities is translating vibes between different domains while preserving their essential qualities. This allows, for example, finding the spatial environment that best matches the vibe of a musical piece.</p>
+          </div>
+          
+          <div class="about-section">
+            <h3>Implementation Notes</h3>
+            <p>This demonstration showcases the March 2025 implementation, featuring:</p>
+            <ul>
+              <li>Direct DOM manipulation for improved performance</li>
+              <li>Procedurally generated textures instead of external assets</li>
+              <li>Responsive interface with immediate visual feedback</li>
+              <li>Simplified code structure with clear data flow</li>
+            </ul>
+          </div>
+          
+          <div class="about-section">
+            <h3>Response to Criticism</h3>
+            <p>A compelling critique suggests that "vibes must be structured relationally rather than hierarchically" and that "vibes are the stuff leftover after you nailed everything into its specific part of your ontology."</p>
+            
+            <p>We acknowledge this tension. The Vibe Engine explores the boundary between what can be systematized and what resists categorization. Like Kuhnian anomalies, vibes may indeed be most valuable precisely when they don't fit our taxonomies—pointing to gaps in our understanding.</p>
+            
+            <p>Rather than claiming to fully capture vibes, this system offers a tool for engaging with them more consciously, while respecting their fundamentally relational and often ineffable nature.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+    
+    <footer>
+      <p>Created by Erin Saint Gull | <a href="https://curate.beauty" target="_blank">curate.beauty</a></p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
