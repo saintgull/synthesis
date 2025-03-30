@@ -567,7 +567,7 @@ main {
 }
 
 /* Text Input Section */
-.text-input-section {
+.text-input-section, .top-text-input-section {
   background-color: var(--color-blue-lightest);
   border: 1px solid var(--color-primary-light);
   border-radius: var(--radius-md);
@@ -575,6 +575,47 @@ main {
   box-shadow: var(--shadow-sm);
 }
 
+/* Prominent top text input section */
+.top-text-input-section {
+  margin-bottom: var(--space-6);
+  padding: var(--space-6);
+  background: linear-gradient(135deg, var(--color-blue-lightest), var(--color-blue-light));
+  border: 2px solid var(--color-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+}
+
+.top-text-input-section h3 {
+  font-size: 1.5rem;
+  margin-bottom: var(--space-4);
+  color: var(--color-primary-dark);
+  font-family: var(--font-heading);
+  font-weight: 700;
+  text-align: center;
+}
+
+.top-text-input-section .text-input-container {
+  max-width: 800px;
+  margin: 0 auto var(--space-3);
+}
+
+.top-text-input-section .vibe-text-input {
+  padding: var(--space-3);
+  font-size: 1.2rem;
+}
+
+.top-text-input-section .action-button {
+  padding: var(--space-3) var(--space-6);
+  font-size: 1.1rem;
+}
+
+.top-text-input-section .text-input-hint {
+  font-size: 0.9rem;
+  margin-top: var(--space-2);
+}
+
+/* Standard text input styling */
 .text-input-section h3 {
   font-size: 1.1rem;
   margin-bottom: var(--space-2);

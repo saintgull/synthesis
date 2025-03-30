@@ -28,6 +28,16 @@
     <main>
       <div class="view-container active" id="explorer-view">
         <div class="unified-interface">
+          <!-- Prominent Text Input Section at the top -->
+          <div class="top-text-input-section">
+            <h3>Describe Your Vibe</h3>
+            <div class="text-input-container">
+              <input type="text" id="vibe-text-input" placeholder="e.g., 'cozy winter evening by the fireplace' or 'energetic urban nightclub'" class="vibe-text-input">
+              <button id="process-text-button" class="action-button">Generate Vibe</button>
+            </div>
+            <p class="text-input-hint">Enter descriptive words or phrases to automatically adjust parameters</p>
+          </div>
+
           <div class="top-row">
             <div class="dimension-group">
               <h3>Temporal Dimensions</h3>
@@ -131,15 +141,6 @@
                 <button class="preset-button" data-preset="jazzClub">Jazz Club</button>
                 <button class="preset-button" data-preset="tropicalBeach">Beach</button>
               </div>
-            </div>
-            
-            <div class="text-input-section">
-              <h3>Describe Your Vibe</h3>
-              <div class="text-input-container">
-                <input type="text" id="vibe-text-input" placeholder="e.g., 'cozy winter evening by the fireplace'" class="vibe-text-input">
-                <button id="process-text-button" class="action-button">Process</button>
-              </div>
-              <p class="text-input-hint">Enter descriptive words or phrases to adjust sliders automatically</p>
             </div>
             
             <div class="vibe-description">
