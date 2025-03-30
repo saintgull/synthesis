@@ -489,6 +489,10 @@ function initializeElements() {
     },
     presetButtons: document.querySelectorAll('.preset-button'),
     
+    // Text input elements
+    vibeTextInput: document.getElementById('vibe-text-input'),
+    processTextButton: document.getElementById('process-text-button'),
+    
     // Visualizer view elements
     tabButtons: document.querySelectorAll('.tab-button'),
     visualizationTabs: document.querySelectorAll('.visualization-tab'),
@@ -608,6 +612,21 @@ function setupEventListeners() {
       updateDescription();
     });
   });
+  
+  // Text input processing
+  if (elements.vibeTextInput && elements.processTextButton) {
+    // Process button click
+    elements.processTextButton.addEventListener('click', () => {
+      processVibeText();
+    });
+    
+    // Enter key in text input
+    elements.vibeTextInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        processVibeText();
+      }
+    });
+  }
   
   // Preset button click events
   elements.presetButtons.forEach(button => {
@@ -1608,6 +1627,305 @@ function showNotification(message, type = 'info') {
       notification.remove();
     }, 300);
   }, 3000);
+}
+
+// Process text input to affect sliders
+function processVibeText() {
+  if (!elements.vibeTextInput) return;
+  
+  const text = elements.vibeTextInput.value.trim().toLowerCase();
+  
+  if (!text) {
+    showNotification('Please enter a vibe description', 'warning');
+    return;
+  }
+  
+  // Create a mapping of descriptive words/phrases to slider adjustments
+  const vibeKeywords = {
+    // Temporal Pace
+    'fast': { temporalPace: 80 },
+    'rapid': { temporalPace: 85 },
+    'quick': { temporalPace: 75 },
+    'slow': { temporalPace: 20 },
+    'sluggish': { temporalPace: 15 },
+    'leisurely': { temporalPace: 30 },
+    'moderate pace': { temporalPace: 50 },
+    
+    // Temporal Rhythm
+    'regular': { temporalRhythm: 20 },
+    'steady': { temporalRhythm: 25 },
+    'rhythmic': { temporalRhythm: 30 },
+    'irregular': { temporalRhythm: 80 },
+    'unpredictable': { temporalRhythm: 85 },
+    'chaotic rhythm': { temporalRhythm: 90 },
+    'flowing': { temporalRhythm: 50 },
+    
+    // Temporal Density
+    'dense': { temporalDensity: 80 },
+    'packed': { temporalDensity: 85 },
+    'busy': { temporalDensity: 75 },
+    'crowded': { temporalDensity: 80 },
+    'sparse': { temporalDensity: 20 },
+    'minimal': { temporalDensity: 15 },
+    'empty': { temporalDensity: 10 },
+    'balanced density': { temporalDensity: 50 },
+    
+    // Energy Intensity
+    'intense': { energyIntensity: 80 },
+    'powerful': { energyIntensity: 85 },
+    'energetic': { energyIntensity: 75 },
+    'high energy': { energyIntensity: 90 },
+    'calm': { energyIntensity: 20 },
+    'relaxed': { energyIntensity: 25 },
+    'peaceful': { energyIntensity: 15 },
+    'serene': { energyIntensity: 10 },
+    'moderate energy': { energyIntensity: 50 },
+    
+    // Energy Flow
+    'flowing': { energyFlow: 80 },
+    'smooth': { energyFlow: 85 },
+    'continuous': { energyFlow: 75 },
+    'staccato': { energyFlow: 20 },
+    'choppy': { energyFlow: 15 },
+    'interrupted': { energyFlow: 25 },
+    'jerky': { energyFlow: 10 },
+    
+    // Energy Stability
+    'stable': { energyStability: 80 },
+    'consistent': { energyStability: 85 },
+    'steady': { energyStability: 75 },
+    'solid': { energyStability: 90 },
+    'chaotic': { energyStability: 20 },
+    'unstable': { energyStability: 15 },
+    'volatile': { energyStability: 10 },
+    'fluctuating': { energyStability: 25 },
+    
+    // Sensory Brightness
+    'bright': { sensoryBrightness: 80 },
+    'light': { sensoryBrightness: 75 },
+    'illuminated': { sensoryBrightness: 85 },
+    'dark': { sensoryBrightness: 20 },
+    'dim': { sensoryBrightness: 25 },
+    'shadowy': { sensoryBrightness: 15 },
+    'gloomy': { sensoryBrightness: 10 },
+    
+    // Sensory Warmth
+    'warm': { sensoryWarmth: 80 },
+    'hot': { sensoryWarmth: 90 },
+    'cozy': { sensoryWarmth: 85 },
+    'cool': { sensoryWarmth: 20 },
+    'cold': { sensoryWarmth: 10 },
+    'crisp': { sensoryWarmth: 25 },
+    'icy': { sensoryWarmth: 5 },
+    
+    // Sensory Texture
+    'rough': { sensoryTexture: 80 },
+    'textured': { sensoryTexture: 75 },
+    'grainy': { sensoryTexture: 85 },
+    'rugged': { sensoryTexture: 90 },
+    'smooth': { sensoryTexture: 20 },
+    'sleek': { sensoryTexture: 15 },
+    'polished': { sensoryTexture: 10 },
+    'silky': { sensoryTexture: 25 },
+    
+    // Common scenes/vibes (combinations of parameters)
+    'beach': { 
+      temporalPace: 30, 
+      temporalRhythm: 65, 
+      temporalDensity: 40, 
+      energyIntensity: 45, 
+      energyFlow: 90, 
+      energyStability: 70, 
+      sensoryBrightness: 90, 
+      sensoryWarmth: 80, 
+      sensoryTexture: 55 
+    },
+    'forest': { 
+      temporalPace: 15, 
+      temporalRhythm: 40, 
+      temporalDensity: 60, 
+      energyIntensity: 20, 
+      energyFlow: 60, 
+      energyStability: 85, 
+      sensoryBrightness: 60, 
+      sensoryWarmth: 35, 
+      sensoryTexture: 80 
+    },
+    'nightclub': { 
+      temporalPace: 85, 
+      temporalRhythm: 80, 
+      temporalDensity: 90, 
+      energyIntensity: 95, 
+      energyFlow: 70, 
+      energyStability: 30, 
+      sensoryBrightness: 20, 
+      sensoryWarmth: 60, 
+      sensoryTexture: 50 
+    },
+    'library': { 
+      temporalPace: 20, 
+      temporalRhythm: 15, 
+      temporalDensity: 85, 
+      energyIntensity: 15, 
+      energyFlow: 40, 
+      energyStability: 95, 
+      sensoryBrightness: 70, 
+      sensoryWarmth: 40, 
+      sensoryTexture: 35 
+    },
+    'cozy': { 
+      temporalPace: 20, 
+      temporalRhythm: 30, 
+      temporalDensity: 40, 
+      energyIntensity: 25, 
+      energyFlow: 65, 
+      energyStability: 85, 
+      sensoryBrightness: 60, 
+      sensoryWarmth: 85, 
+      sensoryTexture: 70 
+    },
+    'winter': { 
+      temporalPace: 30, 
+      temporalRhythm: 40, 
+      temporalDensity: 50, 
+      energyIntensity: 35, 
+      energyFlow: 60, 
+      energyStability: 75, 
+      sensoryBrightness: 80, 
+      sensoryWarmth: 15, 
+      sensoryTexture: 60 
+    },
+    'summer': { 
+      temporalPace: 60, 
+      temporalRhythm: 50, 
+      temporalDensity: 70, 
+      energyIntensity: 75, 
+      energyFlow: 80, 
+      energyStability: 60, 
+      sensoryBrightness: 95, 
+      sensoryWarmth: 90, 
+      sensoryTexture: 50 
+    },
+    'rainy': { 
+      temporalPace: 40, 
+      temporalRhythm: 70, 
+      temporalDensity: 75, 
+      energyIntensity: 45, 
+      energyFlow: 90, 
+      energyStability: 65, 
+      sensoryBrightness: 40, 
+      sensoryWarmth: 30, 
+      sensoryTexture: 70 
+    },
+    'urban': { 
+      temporalPace: 75, 
+      temporalRhythm: 60, 
+      temporalDensity: 85, 
+      energyIntensity: 70, 
+      energyFlow: 50, 
+      energyStability: 40, 
+      sensoryBrightness: 65, 
+      sensoryWarmth: 50, 
+      sensoryTexture: 75 
+    },
+    'jazz': { 
+      temporalPace: 50, 
+      temporalRhythm: 70, 
+      temporalDensity: 65, 
+      energyIntensity: 60, 
+      energyFlow: 80, 
+      energyStability: 40, 
+      sensoryBrightness: 25, 
+      sensoryWarmth: 75, 
+      sensoryTexture: 65 
+    },
+    'fireplace': { 
+      temporalPace: 30, 
+      temporalRhythm: 60, 
+      temporalDensity: 50, 
+      energyIntensity: 45, 
+      energyFlow: 70, 
+      energyStability: 55, 
+      sensoryBrightness: 60, 
+      sensoryWarmth: 95, 
+      sensoryTexture: 80 
+    },
+    'cyberpunk': { 
+      temporalPace: 75, 
+      temporalRhythm: 65, 
+      temporalDensity: 95, 
+      energyIntensity: 85, 
+      energyFlow: 50, 
+      energyStability: 25, 
+      sensoryBrightness: 60, 
+      sensoryWarmth: 20, 
+      sensoryTexture: 90 
+    }
+  };
+  
+  // Track matches to calculate weighted average
+  const matches = {};
+  let matchCount = 0;
+  
+  // Check for keyword matches in the input text
+  Object.entries(vibeKeywords).forEach(([keyword, parameters]) => {
+    if (text.includes(keyword)) {
+      console.log(`Matched keyword: ${keyword}`);
+      matchCount++;
+      
+      // Add matched parameters to our tracking object
+      Object.entries(parameters).forEach(([param, value]) => {
+        if (!matches[param]) {
+          matches[param] = [];
+        }
+        matches[param].push(value);
+      });
+    }
+  });
+  
+  if (matchCount === 0) {
+    showNotification('No recognized vibe keywords found. Try different terms.', 'info');
+    return;
+  }
+  
+  // Calculate average values for each parameter from matches
+  const newValues = {};
+  Object.entries(matches).forEach(([param, values]) => {
+    // Simple average
+    const average = values.reduce((sum, val) => sum + val, 0) / values.length;
+    newValues[param] = Math.round(average);
+  });
+  
+  // Apply the new values to sliders and update the vibe state
+  Object.entries(newValues).forEach(([param, value]) => {
+    // Update vibe state
+    vibeState[param] = value;
+    
+    // Update slider UI
+    if (elements.sliders[param]) {
+      elements.sliders[param].value = value;
+    }
+  });
+  
+  // Clear active preset
+  clearActivePreset();
+  
+  // Update description
+  updateDescription();
+  
+  // Update visualizations if on visualizer view
+  if (appState.currentView === 'visualizer') {
+    renderVisualizations();
+  }
+  
+  // Show confirmation
+  showNotification(`Processed text and adjusted ${Object.keys(newValues).length} vibe parameters`, 'success');
+  
+  // Switch to visualizer view to show the changes
+  const visualizerButton = document.querySelector('.nav-button[data-view="visualizer"]');
+  if (visualizerButton) {
+    visualizerButton.click();
+  }
 }
 
 // Utility function to map a value from one range to another
