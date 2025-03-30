@@ -2,27 +2,29 @@
 
 ## Song Recommendation System
 
-### Phase 1: Create Song Database
-- [ ] Build JSON file with 20-30 diverse songs
-- [ ] Include attributes for each song: energy, tempo, brightness, warmth, texture
-- [ ] Add preview URLs, album art links, artist info
-- [ ] Organize songs into categories for easier browsing
-- [ ] Implement initial song matching algorithm based on vibe parameters
+### Phase 1: Spotify API Integration
+- [ ] Register application with Spotify Developer Dashboard
+- [ ] Obtain Client ID and Client Secret for app
+- [ ] Set up server for handling Client Credentials flow
+- [ ] Implement token management (acquisition, refresh, storage)
+- [ ] Test API connection with basic endpoints
 
-### Phase 2: Build Recommendation UI
-- [ ] Design song recommendation panel layout
-- [ ] Create responsive grid/list for displaying matches
+### Phase 2: Vibe-to-Music Parameter Mapping
+- [ ] Create mapping system between vibe parameters and Spotify attributes
+- [ ] Map energy dimensions to Spotify's energy/danceability
+- [ ] Map temporal dimensions to Spotify's tempo/valence
+- [ ] Map sensory dimensions to acousticness/instrumentalness
+- [ ] Test parameter mapping with sample vibe states
+- [ ] Implement genres selection based on vibe combinations
+
+### Phase 3: Build Recommendation UI
+- [ ] Design song recommendation panel with "Generate" button
+- [ ] Create responsive grid for displaying Spotify matches
 - [ ] Build song card component with album art and details
-- [ ] Implement audio player for previewing songs
-- [ ] Add sorting options (by match score, artist, etc.)
-- [ ] Create smooth transitions for updating recommendations when vibe changes
-
-### Phase 3: Backend Integration (Optional)
-- [ ] Set up Express server for handling API requests
-- [ ] Create endpoint for song recommendations
-- [ ] Add caching for performance
-- [ ] Consider Spotify API integration for expanded library
-- [ ] Add analytics to track popular vibe-song combinations
+- [ ] Implement audio player for previewing tracks
+- [ ] Add filters for refining recommendations
+- [ ] Create smooth loading animations for API requests
+- [ ] Implement error handling for failed API calls
 
 ## Image Generation System
 
@@ -95,10 +97,10 @@
 
 ## Immediate Next Steps
 
-1. Start with the song database:
-   - Create JSON structure for song metadata
-   - Add sample of 10 songs with complete attributes
-   - Write basic matching algorithm
+1. Set up Spotify API integration:
+   - Register app with Spotify Developer Dashboard
+   - Implement Client Credentials authentication flow
+   - Create simple test to verify API connectivity
 
 2. Begin design work:
    - Sketch layout for recommendation panels
