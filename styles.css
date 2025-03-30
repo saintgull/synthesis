@@ -157,20 +157,42 @@ header {
   padding: var(--space-8) 0;
 }
 
-.version {
-  font-size: 0.75em;
-  color: var(--color-secondary);
-  vertical-align: super;
-  font-weight: 400;
-  font-family: var(--font-body);
+.funky-title {
+  font-family: 'Road Rage', cursive;
+  font-size: 4.5rem;
+  color: #D35400; /* Dark orange */
+  text-shadow: 4px 4px 0 #F1C40F, /* Yellow shadow */
+              8px 8px 6px rgba(0, 0, 0, 0.3);
+  margin-bottom: var(--space-2);
+  letter-spacing: 0.05em;
+  transform: rotate(-2deg);
+  display: inline-block;
+  animation: pulsate 3s ease-in-out infinite;
+  position: relative;
+}
+
+@keyframes pulsate {
+  0% {
+    transform: rotate(-2deg) scale(1);
+    text-shadow: 4px 4px 0 #F1C40F, 8px 8px 6px rgba(0, 0, 0, 0.3);
+  }
+  50% {
+    transform: rotate(-1deg) scale(1.05);
+    text-shadow: 6px 6px 0 #F1C40F, 10px 10px 8px rgba(0, 0, 0, 0.3);
+  }
+  100% {
+    transform: rotate(-2deg) scale(1);
+    text-shadow: 4px 4px 0 #F1C40F, 8px 8px 6px rgba(0, 0, 0, 0.3);
+  }
 }
 
 .subtitle {
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   color: var(--color-text-light);
   margin-bottom: var(--space-6);
   font-family: var(--font-body);
   font-weight: 400;
+  letter-spacing: 0.03em;
 }
 
 .main-nav {
