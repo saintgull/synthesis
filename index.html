@@ -352,7 +352,7 @@
     
     <div class="nav">
         <a href="#about" onclick="document.getElementById('about').scrollIntoView({behavior: 'smooth'})">about</a>
-        <a href="index_old.html">old version</a>
+        <a href="index_old.html#old-version-view" onclick="setTimeout(() => { const oldVersionBtn = document.querySelector('[data-view=old-version]'); if(oldVersionBtn) oldVersionBtn.click(); }, 100);">old version</a>
     </div>
     
     <script>
