@@ -17,105 +17,27 @@
       <p class="subtitle">Interactive vibe engineering system</p>
       
       <nav class="main-nav">
-        <button class="nav-button active" data-view="test-model">Test the Model</button>
+        <button class="nav-button active" data-view="explorer">Vibe Explorer</button>
+        <button class="nav-button" data-view="visualizer">Visualizer</button>
+        <button class="nav-button" data-view="translator">Cross-Domain Translator</button>
+        <button class="nav-button" data-view="examples">Domain Examples</button>
         <button class="nav-button" data-view="about">About</button>
-        <button class="nav-button" data-view="old-version">Old Version</button>
       </nav>
     </header>
 
     <main>
-      <div class="view-container active" id="test-model-view">
-        <h2>Test the Model</h2>
-        <p class="section-intro">Test our vibe translation model with your own inputs.</p>
-        
-        <div class="model-test-container">
-          <div class="test-input-section">
-            <h3>Input Your Vibe</h3>
-            <textarea 
-              id="model-test-input" 
-              placeholder="Describe a vibe, scene, or feeling you want to translate..."
-              rows="4"
-              style="width: 100%; padding: 1rem; border: 2px solid var(--color-border); border-radius: 8px; font-family: inherit;"
-            ></textarea>
-            <button id="test-model-button" class="action-button" style="margin-top: 1rem;">Analyze Vibe</button>
-          </div>
-          
-          <div class="test-results-section" style="margin-top: 2rem;">
-            <h3>Model Analysis</h3>
-            <div id="model-test-results" style="min-height: 200px; padding: 1rem; background: var(--color-surface); border-radius: 8px; border: 1px solid var(--color-border);">
-              <p style="color: var(--color-text-light); font-style: italic;">Enter a description above and click "Analyze Vibe" to see the model's interpretation.</p>
+      <div class="view-container active" id="explorer-view">
+        <div class="unified-interface">
+          <!-- Prominent Text Input Section at the top -->
+          <div class="top-text-input-section">
+            <h3>Describe Your Vibe</h3>
+            <div class="text-input-container">
+              <input type="text" id="vibe-text-input" placeholder="e.g., 'cozy winter evening by the fireplace' or 'blue and rough texture'" class="vibe-text-input">
+              <button id="process-text-button" class="action-button">Generate Vibe</button>
             </div>
+            <p class="text-input-hint">Enter descriptive words or specific attributes (color, texture, brightness, etc.)</p>
+            <div id="semantic-results" class="semantic-results"></div>
           </div>
-        </div>
-      </div>
-
-      <div class="view-container" id="about-view">
-        <h2>About the Vibe Engine</h2>
-        <p class="section-intro">An exploration of systematizing aesthetic experiences while respecting their ineffable qualities.</p>
-        
-        <div class="about-content">
-          <div class="about-section">
-            <h3>Core Concept</h3>
-            <p>The Vibe Engine is a framework for analyzing, deconstructing, and translating aesthetic experiences—or "vibes"—across different domains. It provides a structured vocabulary and mathematical model for what is often considered difficult to articulate.</p>
-            
-            <p>Rather than claiming to fully capture the ineffable quality of vibes, the engine acknowledges the tension between systematization and the resistance of vibes to categorization. It offers a tool for exploring this boundary—a map that is useful while recognizing it is not the territory.</p>
-          </div>
-          
-          <div class="about-section">
-            <h3>The Taxonomy</h3>
-            <p>Our approach uses seven core dimensions, each with multiple attributes:</p>
-            <ul>
-              <li><strong>Temporal:</strong> How time is perceived (pace, rhythm, density)</li>
-              <li><strong>Energy:</strong> The quality and flow of energy (intensity, flow, stability)</li>
-              <li><strong>Emotional:</strong> Feeling qualities (valence, arousal, intimacy)</li>
-              <li><strong>Conceptual:</strong> Intellectual dimensions (abstraction, temporal framing, complexity)</li>
-              <li><strong>Spatial:</strong> Physical perception (openness, geometry, depth)</li>
-              <li><strong>Cultural:</strong> Contextual elements (historicity, specificity, subculture)</li>
-              <li><strong>Sensory:</strong> Direct sensory elements (texture, brightness, warmth, color)</li>
-            </ul>
-          </div>
-          
-          <div class="about-section">
-            <h3>Cross-Domain Translation</h3>
-            <p>One of the core capabilities is translating vibes between different domains while preserving their essential qualities. This allows, for example, finding the spatial environment that best matches the vibe of a musical piece.</p>
-          </div>
-          
-          <div class="about-section">
-            <h3>Implementation Notes</h3>
-            <p>This demonstration showcases the March 2025 implementation, featuring:</p>
-            <ul>
-              <li>Direct DOM manipulation for improved performance</li>
-              <li>Procedurally generated textures instead of external assets</li>
-              <li>Responsive interface with immediate visual feedback</li>
-              <li>Simplified code structure with clear data flow</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      <div class="view-container" id="old-version-view">
-        <h2>Original Vibe Engine Interface</h2>
-        <p class="section-intro">The complete original demo with all interactive features.</p>
-        
-        <div class="old-version-nav">
-          <button class="nav-button active" data-old-view="explorer">Vibe Explorer</button>
-          <button class="nav-button" data-old-view="visualizer">Visualizer</button>
-          <button class="nav-button" data-old-view="translator">Cross-Domain Translator</button>
-          <button class="nav-button" data-old-view="examples">Domain Examples</button>
-        </div>
-        
-        <div class="old-view-container active" id="old-explorer-view">
-          <div class="unified-interface">
-            <!-- Prominent Text Input Section at the top -->
-            <div class="top-text-input-section">
-              <h3>Describe Your Vibe</h3>
-              <div class="text-input-container">
-                <input type="text" id="vibe-text-input" placeholder="e.g., 'cozy winter evening by the fireplace' or 'blue and rough texture'" class="vibe-text-input">
-                <button id="process-text-button" class="action-button">Generate Vibe</button>
-              </div>
-              <p class="text-input-hint">Enter descriptive words or specific attributes (color, texture, brightness, etc.)</p>
-              <div id="semantic-results" class="semantic-results"></div>
-            </div>
 
           <div class="top-row">
             <div class="dimension-group">
@@ -417,21 +339,58 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <div class="view-container" id="about-view">
+        <h2>About the Vibe Engine</h2>
+        <p class="section-intro">An exploration of systematizing aesthetic experiences while respecting their ineffable qualities.</p>
         
-        <!-- Add more old version views here... -->
-        <div class="old-view-container" id="old-visualizer-view">
-          <h3>Visualizer (Original)</h3>
-          <p>The original visualization interface would go here.</p>
-        </div>
-        
-        <div class="old-view-container" id="old-translator-view">
-          <h3>Cross-Domain Translator (Original)</h3>
-          <p>The original translator interface would go here.</p>
-        </div>
-        
-        <div class="old-view-container" id="old-examples-view">
-          <h3>Domain Examples (Original)</h3>
-          <p>The original examples interface would go here.</p>
+        <div class="about-content">
+          <div class="about-section">
+            <h3>Core Concept</h3>
+            <p>The Vibe Engine is a framework for analyzing, deconstructing, and translating aesthetic experiences—or "vibes"—across different domains. It provides a structured vocabulary and mathematical model for what is often considered difficult to articulate.</p>
+            
+            <p>Rather than claiming to fully capture the ineffable quality of vibes, the engine acknowledges the tension between systematization and the resistance of vibes to categorization. It offers a tool for exploring this boundary—a map that is useful while recognizing it is not the territory.</p>
+          </div>
+          
+          <div class="about-section">
+            <h3>The Taxonomy</h3>
+            <p>Our approach uses seven core dimensions, each with multiple attributes:</p>
+            <ul>
+              <li><strong>Temporal:</strong> How time is perceived (pace, rhythm, density)</li>
+              <li><strong>Energy:</strong> The quality and flow of energy (intensity, flow, stability)</li>
+              <li><strong>Emotional:</strong> Feeling qualities (valence, arousal, intimacy)</li>
+              <li><strong>Conceptual:</strong> Intellectual dimensions (abstraction, temporal framing, complexity)</li>
+              <li><strong>Spatial:</strong> Physical perception (openness, geometry, depth)</li>
+              <li><strong>Cultural:</strong> Contextual elements (historicity, specificity, subculture)</li>
+              <li><strong>Sensory:</strong> Direct sensory elements (texture, brightness, warmth, color)</li>
+            </ul>
+          </div>
+          
+          <div class="about-section">
+            <h3>Cross-Domain Translation</h3>
+            <p>One of the core capabilities is translating vibes between different domains while preserving their essential qualities. This allows, for example, finding the spatial environment that best matches the vibe of a musical piece.</p>
+          </div>
+          
+          <div class="about-section">
+            <h3>Implementation Notes</h3>
+            <p>This demonstration showcases the March 2025 implementation, featuring:</p>
+            <ul>
+              <li>Direct DOM manipulation for improved performance</li>
+              <li>Procedurally generated textures instead of external assets</li>
+              <li>Responsive interface with immediate visual feedback</li>
+              <li>Simplified code structure with clear data flow</li>
+            </ul>
+          </div>
+          
+          <div class="about-section">
+            <h3>Response to Criticism</h3>
+            <p>A compelling critique suggests that "vibes must be structured relationally rather than hierarchically" and that "vibes are the stuff leftover after you nailed everything into its specific part of your ontology."</p>
+            
+            <p>We acknowledge this tension. The Vibe Engine explores the boundary between what can be systematized and what resists categorization. Like Kuhnian anomalies, vibes may indeed be most valuable precisely when they don't fit our taxonomies—pointing to gaps in our understanding.</p>
+            
+            <p>Rather than claiming to fully capture vibes, this system offers a tool for engaging with them more consciously, while respecting their fundamentally relational and often ineffable nature.</p>
+          </div>
         </div>
       </div>
     </main>
@@ -689,197 +648,6 @@
     window.addEventListener("load", function() {
       console.log("Window load event, running final check");
       setupEmergencyHandlers();
-    });
-
-    // New tab navigation for the simplified interface
-    function setupNewTabNavigation() {
-      console.log("Setting up new tab navigation");
-      
-      // Main navigation (Test Model, About, Old Version)
-      const mainNavButtons = document.querySelectorAll('.main-nav .nav-button');
-      const viewContainers = document.querySelectorAll('.view-container');
-      
-      mainNavButtons.forEach(button => {
-        button.addEventListener('click', function() {
-          const targetView = button.dataset.view;
-          console.log(`Switching to view: ${targetView}`);
-          
-          // Update active button
-          mainNavButtons.forEach(btn => btn.classList.remove('active'));
-          button.classList.add('active');
-          
-          // Show correct view
-          viewContainers.forEach(container => container.classList.remove('active'));
-          const targetContainer = document.getElementById(`${targetView}-view`);
-          if (targetContainer) {
-            targetContainer.classList.add('active');
-          }
-        });
-      });
-      
-      // Old version sub-navigation
-      const oldNavButtons = document.querySelectorAll('.old-version-nav .nav-button');
-      const oldViewContainers = document.querySelectorAll('.old-view-container');
-      
-      oldNavButtons.forEach(button => {
-        button.addEventListener('click', function() {
-          const targetOldView = button.dataset.oldView;
-          console.log(`Switching to old view: ${targetOldView}`);
-          
-          // Update active button in old nav
-          oldNavButtons.forEach(btn => btn.classList.remove('active'));
-          button.classList.add('active');
-          
-          // Show correct old view
-          oldViewContainers.forEach(container => container.classList.remove('active'));
-          const targetOldContainer = document.getElementById(`old-${targetOldView}-view`);
-          if (targetOldContainer) {
-            targetOldContainer.classList.add('active');
-          }
-        });
-      });
-      
-      // Test the Model functionality
-      const testModelButton = document.getElementById('test-model-button');
-      const modelTestInput = document.getElementById('model-test-input');
-      const modelTestResults = document.getElementById('model-test-results');
-      
-      if (testModelButton && modelTestInput && modelTestResults) {
-        testModelButton.addEventListener('click', function() {
-          const inputText = modelTestInput.value.trim();
-          if (!inputText) {
-            alert('Please enter a vibe description to analyze.');
-            return;
-          }
-          
-          console.log(`Testing model with input: ${inputText}`);
-          
-          // Show loading state
-          testModelButton.textContent = 'Analyzing...';
-          testModelButton.disabled = true;
-          
-          // Simulate model analysis
-          setTimeout(() => {
-            const analysisResult = generateVibeAnalysis(inputText);
-            modelTestResults.innerHTML = analysisResult;
-            
-            // Reset button
-            testModelButton.textContent = 'Analyze Vibe';
-            testModelButton.disabled = false;
-          }, 1500);
-        });
-      }
-    }
-    
-    // Generate mock vibe analysis
-    function generateVibeAnalysis(text) {
-      const words = text.toLowerCase().split(' ');
-      
-      // Simple keyword-based analysis
-      let temporal = 50, energy = 50, sensory = 50;
-      let mood = "neutral", dominantFeatures = [];
-      
-      // Analyze keywords
-      if (words.some(w => ['fast', 'quick', 'rapid', 'speedy'].includes(w))) {
-        temporal += 30;
-        dominantFeatures.push("high temporal pace");
-      }
-      if (words.some(w => ['slow', 'calm', 'peaceful', 'gentle'].includes(w))) {
-        temporal -= 30;
-        dominantFeatures.push("low temporal pace");
-      }
-      if (words.some(w => ['bright', 'vibrant', 'glowing', 'luminous'].includes(w))) {
-        sensory += 25;
-        dominantFeatures.push("high brightness");
-      }
-      if (words.some(w => ['dark', 'dim', 'shadowy', 'muted'].includes(w))) {
-        sensory -= 25;
-        dominantFeatures.push("low brightness");
-      }
-      if (words.some(w => ['energetic', 'intense', 'powerful', 'strong'].includes(w))) {
-        energy += 25;
-        dominantFeatures.push("high energy intensity");
-      }
-      if (words.some(w => ['warm', 'cozy', 'comfortable', 'soft'].includes(w))) {
-        mood = "warm and inviting";
-        dominantFeatures.push("warm sensory quality");
-      }
-      if (words.some(w => ['cool', 'cold', 'crisp', 'sharp'].includes(w))) {
-        mood = "cool and crisp";
-        dominantFeatures.push("cool sensory quality");
-      }
-      
-      // Clamp values
-      temporal = Math.max(0, Math.min(100, temporal));
-      energy = Math.max(0, Math.min(100, energy));
-      sensory = Math.max(0, Math.min(100, sensory));
-      
-      return `
-        <div style="background: var(--color-surface); padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
-          <h4 style="color: var(--color-primary); margin-bottom: 1rem;">Analysis Results</h4>
-          <p><strong>Input:</strong> "${text}"</p>
-          <p><strong>Detected Mood:</strong> ${mood}</p>
-          <p><strong>Key Features:</strong> ${dominantFeatures.length ? dominantFeatures.join(', ') : 'balanced characteristics'}</p>
-        </div>
-        
-        <div style="background: var(--color-surface); padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
-          <h4 style="color: var(--color-primary); margin-bottom: 1rem;">Dimensional Analysis</h4>
-          <div style="margin-bottom: 0.5rem;">
-            <strong>Temporal Pace:</strong> ${temporal}/100 
-            <div style="background: var(--color-border); height: 8px; border-radius: 4px; overflow: hidden; margin-top: 4px;">
-              <div style="background: var(--color-primary); height: 100%; width: ${temporal}%; transition: width 0.3s;"></div>
-            </div>
-          </div>
-          <div style="margin-bottom: 0.5rem;">
-            <strong>Energy Intensity:</strong> ${energy}/100
-            <div style="background: var(--color-border); height: 8px; border-radius: 4px; overflow: hidden; margin-top: 4px;">
-              <div style="background: var(--color-secondary); height: 100%; width: ${energy}%; transition: width 0.3s;"></div>
-            </div>
-          </div>
-          <div style="margin-bottom: 0.5rem;">
-            <strong>Sensory Brightness:</strong> ${sensory}/100
-            <div style="background: var(--color-border); height: 8px; border-radius: 4px; overflow: hidden; margin-top: 4px;">
-              <div style="background: var(--color-accent); height: 100%; width: ${sensory}%; transition: width 0.3s;"></div>
-            </div>
-          </div>
-        </div>
-        
-        <div style="background: var(--color-surface); padding: 1.5rem; border-radius: 8px;">
-          <h4 style="color: var(--color-primary); margin-bottom: 1rem;">Cross-Domain Translation</h4>
-          <p><strong>Musical equivalent:</strong> ${generateMusicalEquivalent(temporal, energy, sensory)}</p>
-          <p><strong>Spatial equivalent:</strong> ${generateSpatialEquivalent(temporal, energy, sensory)}</p>
-          <p><strong>Visual equivalent:</strong> ${generateVisualEquivalent(temporal, energy, sensory)}</p>
-        </div>
-      `;
-    }
-    
-    function generateMusicalEquivalent(temporal, energy, sensory) {
-      if (temporal < 30 && energy < 40) return "Ambient/drone music with sustained tones";
-      if (temporal > 70 && energy > 70) return "Fast-paced electronic dance music";
-      if (energy < 30 && sensory > 60) return "Soft acoustic folk with gentle melodies";
-      if (energy > 60 && temporal < 50) return "Heavy rock with strong rhythmic emphasis";
-      return "Mid-tempo indie music with balanced instrumentation";
-    }
-    
-    function generateSpatialEquivalent(temporal, energy, sensory) {
-      if (temporal < 30 && energy < 40) return "Quiet library or meditation space";
-      if (temporal > 70 && energy > 70) return "Busy urban plaza or vibrant marketplace";
-      if (energy < 30 && sensory > 60) return "Cozy home interior with warm lighting";
-      if (energy > 60 && temporal < 50) return "Industrial workshop or active studio";
-      return "Comfortable café or communal workspace";
-    }
-    
-    function generateVisualEquivalent(temporal, energy, sensory) {
-      if (temporal < 30 && energy < 40) return "Minimalist composition with muted colors";
-      if (temporal > 70 && energy > 70) return "Dynamic abstract expressionist painting";
-      if (energy < 30 && sensory > 60) return "Soft impressionist landscape with warm tones";
-      if (energy > 60 && temporal < 50) return "Bold geometric design with contrasting colors";
-      return "Balanced contemporary artwork with moderate contrast";
-    }
-    
-    // Setup everything when DOM is ready
-    document.addEventListener('DOMContentLoaded', function() {
-      setupNewTabNavigation();
     });
   </script>
   
