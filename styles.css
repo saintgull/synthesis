@@ -30,7 +30,7 @@
   --color-flame-lightest: #fbdcd3;
   
   /* Application Colors */
-  --color-background: var(--color-seasalt);
+  --color-background: #f8f4f2;
   --color-surface: var(--color-seasalt-light);
   --color-primary: var(--color-blue);
   --color-primary-light: var(--color-blue-light);
@@ -615,6 +615,125 @@ main {
   margin-top: var(--space-2);
 }
 
+.semantic-results {
+  margin-top: 1rem;
+  padding: 0;
+  border-radius: 8px;
+  background-color: rgba(0, 0, 0, 0.25);
+  font-size: 0.95rem;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: max-height 0.4s ease-out, padding 0.3s ease-out, opacity 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.semantic-results.has-results {
+  max-height: 300px;
+  padding: 0.75rem;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.semantic-results h4 {
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  font-family: var(--font-heading);
+  color: #ffc107;
+  display: flex;
+  align-items: center;
+  font-size: 1.1rem;
+}
+
+.semantic-results .semantic-icon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.7; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
+  100% { opacity: 0.7; transform: scale(1); }
+}
+
+.semantic-match {
+  display: inline-block;
+  background: rgba(99, 102, 241, 0.2);
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  border-radius: 6px;
+  padding: 0.25rem 0.5rem;
+  margin: 0.3rem;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.semantic-match:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Attribute-specific styling */
+.semantic-match.sensory-attribute {
+  background: rgba(55, 119, 255, 0.2);
+  border-color: rgba(55, 119, 255, 0.4);
+}
+
+.semantic-match.temporal-attribute {
+  background: rgba(149, 198, 35, 0.2);
+  border-color: rgba(149, 198, 35, 0.4);
+}
+
+.semantic-match.energy-attribute {
+  background: rgba(236, 78, 32, 0.2);
+  border-color: rgba(236, 78, 32, 0.4);
+}
+
+.semantic-match.color-attribute {
+  background: rgba(81, 23, 48, 0.2);
+  border-color: rgba(81, 23, 48, 0.4);
+}
+
+.semantic-match .attr-name {
+  color: #ffc107;
+  font-weight: bold;
+}
+
+.semantic-match .attr-value {
+  color: #fff;
+  font-weight: 500;
+}
+
+.semantic-match .attr-confidence {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.8em;
+  font-weight: 400;
+  margin-left: 0.3rem;
+  padding: 0.1rem 0.3rem;
+  border-radius: 3px;
+}
+
+/* Confidence level indicators */
+.semantic-match .high-confidence {
+  background-color: rgba(149, 198, 35, 0.3);
+  border: 1px solid rgba(149, 198, 35, 0.5);
+}
+
+.semantic-match .medium-confidence {
+  background-color: rgba(236, 198, 35, 0.3);
+  border: 1px solid rgba(236, 198, 35, 0.5);
+}
+
+.semantic-match .low-confidence {
+  background-color: rgba(236, 78, 32, 0.3);
+  border: 1px solid rgba(236, 78, 32, 0.5);
+}
+
 /* Standard text input styling */
 .text-input-section h3 {
   font-size: 1.1rem;
@@ -912,11 +1031,13 @@ footer {
   right: 20px;
   padding: 12px 20px;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  font-size: 0.9rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  font-size: 1rem;
+  font-weight: 500;
   z-index: 1000;
   max-width: 300px;
-  animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+  animation: slideIn 0.3s ease;
+  opacity: 1;
 }
 
 .notification.success {
@@ -965,4 +1086,39 @@ footer {
     opacity: 0;
     transform: translateY(10px);
   }
+}
+
+/* New Tab Structure Styles */
+.model-test-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: var(--space-6);
+}
+
+.test-input-section h3,
+.test-results-section h3 {
+  color: var(--color-primary);
+  font-family: var(--font-heading);
+  margin-bottom: var(--space-4);
+}
+
+/* Old Version Navigation */
+.old-version-nav {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: var(--space-6) 0;
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+}
+
+.old-view-container {
+  display: none;
+}
+
+.old-view-container.active {
+  display: block;
 }
