@@ -232,6 +232,33 @@
             font-weight: 400;
             color: #53599a;
         }
+        
+        /* Footer */
+        .footer {
+            margin-top: 4rem;
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid rgba(106, 142, 127, 0.2);
+        }
+        
+        .footer p {
+            font-size: 0.9rem;
+            color: #6a8e7f;
+            font-weight: 300;
+            margin: 0;
+        }
+        
+        .footer a {
+            color: #53599a;
+            text-decoration: none;
+            font-weight: 400;
+            transition: color 0.3s;
+        }
+        
+        .footer a:hover {
+            color: #434a80;
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -354,6 +381,10 @@
         <a href="#about" onclick="document.getElementById('about').scrollIntoView({behavior: 'smooth'})">about</a>
         <a href="index_old.html#old-version-view" onclick="setTimeout(() => { const oldVersionBtn = document.querySelector('[data-view=old-version]'); if(oldVersionBtn) oldVersionBtn.click(); }, 100);">old version</a>
     </div>
+    
+    <footer class="footer">
+        <p>created by erin saint gull | <a href="https://twitter.com/earnestpost" target="_blank">twitter</a>, <a href="https://curate.beauty" target="_blank">website</a></p>
+    </footer>
     
     <script>
         const dimensions = ['warmth', 'brightness', 'texture', 'valence', 'arousal', 'intensity', 'geometry', 'color_temperature'];
