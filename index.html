@@ -115,6 +115,13 @@
             font-weight: 400;
         }
         
+        .dimension-interpretation {
+            color: #6a8e7f;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+            font-style: italic;
+        }
+        
         .slider-container {
             position: relative;
             width: 100%;
@@ -281,6 +288,7 @@
                 <div class="slider-container">
                     <div class="slider-fill" id="warmth-slider"></div>
                 </div>
+                <div class="dimension-interpretation" id="warmth-interpretation"></div>
             </div>
             
             <div class="dimension">
@@ -291,6 +299,7 @@
                 <div class="slider-container">
                     <div class="slider-fill" id="brightness-slider"></div>
                 </div>
+                <div class="dimension-interpretation" id="brightness-interpretation"></div>
             </div>
             
             <div class="dimension">
@@ -301,6 +310,7 @@
                 <div class="slider-container">
                     <div class="slider-fill" id="texture-slider"></div>
                 </div>
+                <div class="dimension-interpretation" id="texture-interpretation"></div>
             </div>
             
             <div class="dimension">
@@ -311,6 +321,7 @@
                 <div class="slider-container">
                     <div class="slider-fill" id="valence-slider"></div>
                 </div>
+                <div class="dimension-interpretation" id="valence-interpretation"></div>
             </div>
             
             <div class="dimension">
@@ -321,6 +332,7 @@
                 <div class="slider-container">
                     <div class="slider-fill" id="arousal-slider"></div>
                 </div>
+                <div class="dimension-interpretation" id="arousal-interpretation"></div>
             </div>
             
             <div class="dimension">
@@ -331,6 +343,7 @@
                 <div class="slider-container">
                     <div class="slider-fill" id="intensity-slider"></div>
                 </div>
+                <div class="dimension-interpretation" id="intensity-interpretation"></div>
             </div>
             
             <div class="dimension">
@@ -341,6 +354,7 @@
                 <div class="slider-container">
                     <div class="slider-fill" id="geometry-slider"></div>
                 </div>
+                <div class="dimension-interpretation" id="geometry-interpretation"></div>
             </div>
             
             <div class="dimension">
@@ -351,6 +365,7 @@
                 <div class="slider-container">
                     <div class="slider-fill" id="color_temperature-slider"></div>
                 </div>
+                <div class="dimension-interpretation" id="color_temperature-interpretation"></div>
             </div>
         </div>
         
@@ -412,6 +427,53 @@
             }
         }
         
+        function getInterpretation(dimension, value) {
+            const interpretations = {
+                warmth: {
+                    0: 'freezing', 15: 'very cold', 30: 'cold', 45: 'cool', 
+                    55: 'neutral', 70: 'warm', 85: 'hot', 95: 'burning'
+                },
+                brightness: {
+                    0: 'pitch black', 15: 'very dark', 30: 'dark', 45: 'dim',
+                    55: 'neutral', 70: 'bright', 85: 'very bright', 95: 'blinding'
+                },
+                texture: {
+                    0: 'silk smooth', 15: 'very smooth', 30: 'smooth', 45: 'soft',
+                    55: 'neutral', 70: 'rough', 85: 'very rough', 95: 'sandpaper'
+                },
+                valence: {
+                    0: 'miserable', 15: 'very sad', 30: 'sad', 45: 'melancholy',
+                    55: 'neutral', 70: 'happy', 85: 'joyful', 95: 'ecstatic'
+                },
+                arousal: {
+                    0: 'deeply calm', 15: 'very calm', 30: 'calm', 45: 'relaxed',
+                    55: 'neutral', 70: 'energetic', 85: 'excited', 95: 'frenzied'
+                },
+                intensity: {
+                    0: 'whisper soft', 15: 'very gentle', 30: 'gentle', 45: 'mild',
+                    55: 'moderate', 70: 'strong', 85: 'intense', 95: 'overwhelming'
+                },
+                geometry: {
+                    0: 'perfectly curved', 15: 'very curved', 30: 'curved', 45: 'soft edges',
+                    55: 'neutral', 70: 'angular', 85: 'very sharp', 95: 'knife-edge'
+                },
+                color_temperature: {
+                    0: 'ice blue', 15: 'very cool', 30: 'cool blue', 45: 'neutral cool',
+                    55: 'neutral', 70: 'warm', 85: 'orange warm', 95: 'fire red'
+                }
+            };
+            
+            const percentage = Math.round(value * 100);
+            const thresholds = Object.keys(interpretations[dimension]).map(Number).sort((a, b) => a - b);
+            
+            for (let i = thresholds.length - 1; i >= 0; i--) {
+                if (percentage >= thresholds[i]) {
+                    return interpretations[dimension][thresholds[i]];
+                }
+            }
+            return interpretations[dimension][0];
+        }
+        
         function displayResults(prediction) {
             dimensions.forEach((dim, i) => {
                 const value = prediction[i];
@@ -419,6 +481,10 @@
                 
                 // Update value display
                 document.getElementById(`${dim}-value`).textContent = `${percentage}%`;
+                
+                // Update interpretation
+                const interpretation = getInterpretation(dim, value);
+                document.getElementById(`${dim}-interpretation`).textContent = interpretation;
                 
                 // Update slider
                 const slider = document.getElementById(`${dim}-slider`);
