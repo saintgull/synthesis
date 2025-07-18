@@ -403,6 +403,7 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'X-API-Key': 'demo_key_12345'  // Demo key for testing
                     },
                     body: JSON.stringify({ text })
                 });
@@ -415,7 +416,7 @@
                 // Show confidence if available
                 if (data.confidence) {
                     const confEl = document.getElementById('confidence');
-                    confEl.textContent = `confidence: ${Math.round(data.confidence * 100)}%`;
+                    confEl.textContent = `confidence: ${Math.round(data.confidence * 100)}% | model: ${data.model_version || 'v1.0'}`;
                     confEl.classList.add('visible');
                 }
                 
