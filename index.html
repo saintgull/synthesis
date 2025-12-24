@@ -258,8 +258,8 @@
             text-decoration: underline;
         }
 
-        /* Radar Chart */
-        .radar-section {
+        /* Animated Visualization */
+        .viz-section {
             margin-top: 2rem;
             display: flex;
             justify-content: center;
@@ -267,13 +267,37 @@
             transition: opacity 0.5s;
         }
 
-        .radar-section.visible {
+        .viz-section.visible {
             opacity: 1;
         }
 
-        #radar-chart {
-            max-width: 100%;
-            height: auto;
+        .viz-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            height: 300px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        #color-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+        }
+
+        #texture-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            pointer-events: none;
         }
 
         /* Feedback Section */
@@ -502,9 +526,12 @@
                 <div class="dimension-interpretation" id="color_temperature-interpretation"></div>
             </div>
 
-            <!-- Radar Chart Visualization -->
-            <div class="radar-section" id="radar-section">
-                <canvas id="radar-chart" width="300" height="300"></canvas>
+            <!-- Animated Vibe Visualization -->
+            <div class="viz-section" id="viz-section">
+                <div class="viz-container">
+                    <canvas id="color-canvas"></canvas>
+                    <canvas id="texture-canvas"></canvas>
+                </div>
             </div>
 
             <!-- RLHF Feedback Section -->
@@ -752,103 +779,263 @@
             // Show results
             document.getElementById('results').classList.add('visible');
 
-            // Render radar chart
-            renderRadarChart(prediction);
-            document.getElementById('radar-section').classList.add('visible');
+            // Start animated visualization
+            initVibeVisualization(prediction);
+            document.getElementById('viz-section').classList.add('visible');
 
             // Show feedback section and reset state
             document.getElementById('feedback-section').classList.add('visible');
             resetFeedback();
         }
 
-        // Radar Chart Rendering
-        function renderRadarChart(prediction) {
-            const canvas = document.getElementById('radar-chart');
-            const ctx = canvas.getContext('2d');
-            const width = canvas.width;
-            const height = canvas.height;
-            const centerX = width / 2;
-            const centerY = height / 2;
-            const radius = Math.min(width, height) / 2 - 40;
+        // Animated Vibe Visualization
+        let colorCanvas, textureCanvas, colorCtx, textureCtx;
+        let animationId = null;
+        let vibeParams = null;
 
-            // Clear canvas
-            ctx.clearRect(0, 0, width, height);
+        function initVibeVisualization(prediction) {
+            // Get canvas elements
+            colorCanvas = document.getElementById('color-canvas');
+            textureCanvas = document.getElementById('texture-canvas');
 
-            const labels = ['warmth', 'bright', 'texture', 'valence', 'arousal', 'intense', 'geometry', 'color'];
-            const numAxes = labels.length;
-            const angleStep = (2 * Math.PI) / numAxes;
+            if (!colorCanvas || !textureCanvas) return;
 
-            // Draw background circles
-            ctx.strokeStyle = 'rgba(106, 142, 127, 0.2)';
-            ctx.lineWidth = 1;
-            for (let i = 1; i <= 4; i++) {
-                ctx.beginPath();
-                ctx.arc(centerX, centerY, (radius * i) / 4, 0, 2 * Math.PI);
-                ctx.stroke();
+            // Set canvas sizes
+            const container = colorCanvas.parentElement;
+            const width = container.clientWidth;
+            const height = container.clientHeight;
+
+            colorCanvas.width = width;
+            colorCanvas.height = height;
+            textureCanvas.width = width;
+            textureCanvas.height = height;
+
+            colorCtx = colorCanvas.getContext('2d');
+            textureCtx = textureCanvas.getContext('2d');
+
+            // Map prediction to visual parameters
+            // [warmth, brightness, texture, valence, arousal, intensity, geometry, color_temperature]
+            vibeParams = {
+                warmth: prediction[0],
+                brightness: prediction[1],
+                texture: prediction[2],
+                valence: prediction[3],
+                arousal: prediction[4],
+                intensity: prediction[5],
+                geometry: prediction[6],
+                colorTemp: prediction[7]
+            };
+
+            // Stop any existing animation
+            if (animationId) {
+                cancelAnimationFrame(animationId);
             }
 
-            // Draw axes and labels
-            ctx.strokeStyle = 'rgba(106, 142, 127, 0.3)';
-            ctx.fillStyle = '#6a8e7f';
-            ctx.font = '11px Funnel Sans, sans-serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
+            // Start animation loop
+            let time = 0;
+            function animate() {
+                time += 0.016;
+                renderVibeFrame(time);
+                animationId = requestAnimationFrame(animate);
+            }
+            animate();
+        }
 
-            for (let i = 0; i < numAxes; i++) {
-                const angle = i * angleStep - Math.PI / 2;
-                const x = centerX + Math.cos(angle) * radius;
-                const y = centerY + Math.sin(angle) * radius;
+        function renderVibeFrame(time) {
+            if (!vibeParams || !colorCtx || !textureCtx) return;
 
-                // Draw axis line
-                ctx.beginPath();
-                ctx.moveTo(centerX, centerY);
-                ctx.lineTo(x, y);
-                ctx.stroke();
+            const width = colorCanvas.width;
+            const height = colorCanvas.height;
 
-                // Draw label
-                const labelX = centerX + Math.cos(angle) * (radius + 20);
-                const labelY = centerY + Math.sin(angle) * (radius + 20);
-                ctx.fillText(labels[i], labelX, labelY);
+            // Clear canvases
+            colorCtx.clearRect(0, 0, width, height);
+            textureCtx.clearRect(0, 0, width, height);
+
+            // Calculate dynamic parameters
+            const p = vibeParams;
+
+            // Base hue from warmth and color temperature
+            const baseHue = mapRange(p.warmth, 0, 1, 220, 30); // Cool blue to warm orange
+            const hueShift = mapRange(p.colorTemp, 0, 1, -30, 30);
+            const hue = (baseHue + hueShift + 360) % 360;
+
+            // Saturation from valence and intensity
+            const saturation = mapRange(p.valence, 0, 1, 30, 80) + mapRange(p.intensity, 0, 1, 0, 20);
+
+            // Lightness from brightness
+            const lightness = mapRange(p.brightness, 0, 1, 15, 75);
+
+            // Animation speed from arousal
+            const speed = mapRange(p.arousal, 0, 1, 0.3, 2.5);
+            const pulseAmount = mapRange(p.intensity, 0, 1, 0.05, 0.25);
+
+            // Pulsing effect
+            const pulse = Math.sin(time * speed) * pulseAmount;
+            const pulse2 = Math.cos(time * speed * 0.7) * pulseAmount * 0.5;
+
+            // Create gradient direction based on geometry (organic vs angular)
+            const gradientAngle = mapRange(p.geometry, 0, 1, time * 20, time * 5); // More angular = slower rotation
+            const angleRad = gradientAngle * Math.PI / 180;
+
+            const x1 = width/2 - Math.cos(angleRad) * width;
+            const y1 = height/2 - Math.sin(angleRad) * height;
+            const x2 = width/2 + Math.cos(angleRad) * width;
+            const y2 = height/2 + Math.sin(angleRad) * height;
+
+            // Create main gradient
+            const gradient = colorCtx.createLinearGradient(x1, y1, x2, y2);
+
+            // Primary color
+            const mainColor = `hsl(${hue}, ${saturation + pulse * 20}%, ${lightness + pulse * 10}%)`;
+
+            // Secondary color - complementary shift based on valence
+            const secondaryHueOffset = mapRange(p.valence, 0, 1, 30, 60);
+            const secondaryHue = (hue + secondaryHueOffset) % 360;
+            const secondaryColor = `hsl(${secondaryHue}, ${saturation}%, ${lightness + pulse2 * 15}%)`;
+
+            // Tertiary color
+            const tertiaryHue = (hue - secondaryHueOffset + 360) % 360;
+            const tertiaryColor = `hsl(${tertiaryHue}, ${saturation * 0.8}%, ${lightness * 0.9}%)`;
+
+            gradient.addColorStop(0, mainColor);
+            gradient.addColorStop(0.5 + pulse * 0.3, secondaryColor);
+            gradient.addColorStop(1, tertiaryColor);
+
+            // Fill background
+            colorCtx.fillStyle = gradient;
+            colorCtx.fillRect(0, 0, width, height);
+
+            // Add radial overlay for depth (based on intensity)
+            if (p.intensity > 0.3) {
+                const radialGradient = colorCtx.createRadialGradient(
+                    width/2 + Math.sin(time * speed * 0.5) * 50,
+                    height/2 + Math.cos(time * speed * 0.5) * 30,
+                    0,
+                    width/2, height/2,
+                    Math.max(width, height) * 0.7
+                );
+
+                const overlayOpacity = mapRange(p.intensity, 0.3, 1, 0.1, 0.4);
+                radialGradient.addColorStop(0, `hsla(${hue}, ${saturation + 20}%, ${lightness + 20}%, ${overlayOpacity})`);
+                radialGradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+                colorCtx.fillStyle = radialGradient;
+                colorCtx.fillRect(0, 0, width, height);
             }
 
-            // Draw data polygon
-            ctx.beginPath();
-            for (let i = 0; i < numAxes; i++) {
-                const angle = i * angleStep - Math.PI / 2;
-                const value = prediction[i];
-                const x = centerX + Math.cos(angle) * radius * value;
-                const y = centerY + Math.sin(angle) * radius * value;
+            // Render texture overlay based on texture parameter
+            renderTexture(time);
+        }
 
-                if (i === 0) {
-                    ctx.moveTo(x, y);
-                } else {
-                    ctx.lineTo(x, y);
+        function renderTexture(time) {
+            if (!vibeParams || !textureCtx) return;
+
+            const width = textureCanvas.width;
+            const height = textureCanvas.height;
+            const p = vibeParams;
+
+            const textureOpacity = mapRange(p.texture, 0, 1, 0.02, 0.25);
+            const textureScale = mapRange(p.texture, 0, 1, 0.5, 4);
+            const speed = mapRange(p.arousal, 0, 1, 0.5, 2);
+
+            // Choose texture type based on geometry (organic vs geometric)
+            if (p.geometry < 0.4) {
+                // Organic: flowing curves
+                renderOrganicTexture(time, textureOpacity, textureScale, speed);
+            } else if (p.geometry < 0.7) {
+                // Mixed: noise pattern
+                renderNoiseTexture(textureOpacity, textureScale);
+            } else {
+                // Geometric: grid/lines
+                renderGeometricTexture(time, textureOpacity, textureScale, speed);
+            }
+        }
+
+        function renderOrganicTexture(time, opacity, scale, speed) {
+            const width = textureCanvas.width;
+            const height = textureCanvas.height;
+
+            textureCtx.strokeStyle = `rgba(255, 255, 255, ${opacity})`;
+            textureCtx.lineWidth = 1;
+
+            // Flowing wave lines
+            const lineCount = Math.floor(8 * scale);
+            const spacing = height / lineCount;
+
+            for (let i = 0; i < lineCount; i++) {
+                textureCtx.beginPath();
+                for (let x = 0; x < width; x += 5) {
+                    const baseY = spacing * (i + 0.5);
+                    const wave1 = Math.sin((x * 0.02 + time * speed) + i * 0.5) * 20 * scale;
+                    const wave2 = Math.cos((x * 0.01 + time * speed * 0.7)) * 10 * scale;
+                    const y = baseY + wave1 + wave2;
+
+                    if (x === 0) {
+                        textureCtx.moveTo(x, y);
+                    } else {
+                        textureCtx.lineTo(x, y);
+                    }
+                }
+                textureCtx.stroke();
+            }
+        }
+
+        function renderNoiseTexture(opacity, scale) {
+            const width = textureCanvas.width;
+            const height = textureCanvas.height;
+            const imageData = textureCtx.createImageData(width, height);
+            const data = imageData.data;
+
+            const noiseIntensity = opacity * 255 * 2;
+            const blockSize = Math.max(1, Math.floor(5 / scale));
+
+            for (let y = 0; y < height; y += blockSize) {
+                for (let x = 0; x < width; x += blockSize) {
+                    const noise = Math.random() * noiseIntensity;
+
+                    for (let by = 0; by < blockSize && y + by < height; by++) {
+                        for (let bx = 0; bx < blockSize && x + bx < width; bx++) {
+                            const i = ((y + by) * width + (x + bx)) * 4;
+                            data[i] = data[i + 1] = data[i + 2] = 255;
+                            data[i + 3] = noise;
+                        }
+                    }
                 }
             }
-            ctx.closePath();
 
-            // Fill with gradient
-            ctx.fillStyle = 'rgba(83, 89, 154, 0.3)';
-            ctx.fill();
-            ctx.strokeStyle = '#53599a';
-            ctx.lineWidth = 2;
-            ctx.stroke();
+            textureCtx.putImageData(imageData, 0, 0);
+        }
 
-            // Draw data points
-            for (let i = 0; i < numAxes; i++) {
-                const angle = i * angleStep - Math.PI / 2;
-                const value = prediction[i];
-                const x = centerX + Math.cos(angle) * radius * value;
-                const y = centerY + Math.sin(angle) * radius * value;
+        function renderGeometricTexture(time, opacity, scale, speed) {
+            const width = textureCanvas.width;
+            const height = textureCanvas.height;
 
-                ctx.beginPath();
-                ctx.arc(x, y, 4, 0, 2 * Math.PI);
-                ctx.fillStyle = interpolateColor(dimensionColors[dimensions[i]], value);
-                ctx.fill();
-                ctx.strokeStyle = '#fff';
-                ctx.lineWidth = 1;
-                ctx.stroke();
+            textureCtx.strokeStyle = `rgba(255, 255, 255, ${opacity})`;
+            textureCtx.lineWidth = 1;
+
+            // Grid lines with subtle animation
+            const gridSize = 30 / scale;
+            const offset = (time * speed * 10) % gridSize;
+
+            // Vertical lines
+            for (let x = offset; x < width; x += gridSize) {
+                textureCtx.beginPath();
+                textureCtx.moveTo(x, 0);
+                textureCtx.lineTo(x, height);
+                textureCtx.stroke();
             }
+
+            // Horizontal lines
+            for (let y = offset; y < height; y += gridSize) {
+                textureCtx.beginPath();
+                textureCtx.moveTo(0, y);
+                textureCtx.lineTo(width, y);
+                textureCtx.stroke();
+            }
+        }
+
+        function mapRange(value, inMin, inMax, outMin, outMax) {
+            return outMin + (value - inMin) * (outMax - outMin) / (inMax - inMin);
         }
 
         // Feedback Functions
