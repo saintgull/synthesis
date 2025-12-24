@@ -383,10 +383,8 @@
     <script>
         const dimensions = ['warmth', 'brightness', 'texture', 'valence', 'arousal', 'intensity', 'geometry', 'color_temperature'];
         
-        // Railway backend URL
-        const API_URL = window.location.hostname === 'localhost' 
-            ? 'http://localhost:8888/api/analyze' 
-            : 'https://vibe-engine-production.up.railway.app/api/analyze';
+        // Railway backend URL - always use production for v9
+        const API_URL = 'https://vibe-engine-production.up.railway.app/api/analyze';
         
         async function analyzeVibe() {
             const text = document.getElementById('textInput').value.trim();
