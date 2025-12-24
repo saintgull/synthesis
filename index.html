@@ -257,6 +257,149 @@
             color: #434a80;
             text-decoration: underline;
         }
+
+        /* Radar Chart */
+        .radar-section {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .radar-section.visible {
+            opacity: 1;
+        }
+
+        #radar-chart {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Feedback Section */
+        .feedback-section {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: rgba(106, 142, 127, 0.08);
+            border-radius: 8px;
+            border: 1px solid rgba(106, 142, 127, 0.15);
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+
+        .feedback-section.visible {
+            opacity: 1;
+        }
+
+        .feedback-question {
+            text-align: center;
+            color: #53599a;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            font-weight: 400;
+        }
+
+        .feedback-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .feedback-btn {
+            padding: 0.5rem 1.25rem;
+            border: 1px solid;
+            border-radius: 4px;
+            font-family: 'Funnel Sans', inherit;
+            font-weight: 300;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: transparent;
+        }
+
+        .feedback-btn.yes {
+            border-color: #6a8e7f;
+            color: #6a8e7f;
+        }
+
+        .feedback-btn.yes:hover, .feedback-btn.yes.selected {
+            background: #6a8e7f;
+            color: white;
+        }
+
+        .feedback-btn.no {
+            border-color: #da627d;
+            color: #da627d;
+        }
+
+        .feedback-btn.no:hover, .feedback-btn.no.selected {
+            background: #da627d;
+            color: white;
+        }
+
+        .feedback-btn.comment {
+            border-color: #53599a;
+            color: #53599a;
+        }
+
+        .feedback-btn.comment:hover {
+            background: rgba(83, 89, 154, 0.1);
+        }
+
+        .comment-box {
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .comment-box.visible {
+            display: block;
+        }
+
+        .comment-box textarea {
+            width: 100%;
+            min-height: 80px;
+            padding: 0.75rem;
+            border: 1px solid #6a8e7f;
+            border-radius: 4px;
+            font-family: 'Funnel Sans', inherit;
+            font-weight: 300;
+            font-size: 0.9rem;
+            resize: vertical;
+            background: transparent;
+            color: #1c1c1c;
+        }
+
+        .comment-box textarea:focus {
+            outline: none;
+            border-color: #53599a;
+        }
+
+        .submit-comment {
+            margin-top: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: #53599a;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-family: 'Funnel Sans', inherit;
+            font-weight: 300;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .submit-comment:hover {
+            background: #434a80;
+        }
+
+        .feedback-status {
+            margin-top: 0.75rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: #6a8e7f;
+            font-weight: 300;
+        }
     </style>
 </head>
 <body>
@@ -358,10 +501,30 @@
                 </div>
                 <div class="dimension-interpretation" id="color_temperature-interpretation"></div>
             </div>
+
+            <!-- Radar Chart Visualization -->
+            <div class="radar-section" id="radar-section">
+                <canvas id="radar-chart" width="300" height="300"></canvas>
+            </div>
+
+            <!-- RLHF Feedback Section -->
+            <div class="feedback-section" id="feedback-section">
+                <p class="feedback-question">is this vibe accurate?</p>
+                <div class="feedback-buttons">
+                    <button class="feedback-btn yes" onclick="submitFeedback('yes')">yes</button>
+                    <button class="feedback-btn no" onclick="submitFeedback('no')">no</button>
+                    <button class="feedback-btn comment" onclick="toggleComment()">comment</button>
+                </div>
+                <div class="comment-box" id="comment-box">
+                    <textarea id="feedback-comment" placeholder="what would you change?"></textarea>
+                    <button class="submit-comment" onclick="submitComment()">submit feedback</button>
+                </div>
+                <div class="feedback-status" id="feedback-status"></div>
+            </div>
         </div>
-        
+
     </div>
-    
+
     <div class="nav">
         <a href="about.html">about</a>
         <a href="index_old.html">old version</a>
@@ -561,7 +724,14 @@
             return `hsl(${h}, ${s}%, ${l}%)`;
         }
 
+        // Store current prediction for feedback
+        let currentPrediction = null;
+        let currentText = '';
+
         function displayResults(prediction) {
+            currentPrediction = prediction;
+            currentText = document.getElementById('textInput').value.trim();
+
             dimensions.forEach((dim, i) => {
                 const value = prediction[i];
                 const percentage = Math.round(value * 100);
@@ -581,8 +751,190 @@
 
             // Show results
             document.getElementById('results').classList.add('visible');
+
+            // Render radar chart
+            renderRadarChart(prediction);
+            document.getElementById('radar-section').classList.add('visible');
+
+            // Show feedback section and reset state
+            document.getElementById('feedback-section').classList.add('visible');
+            resetFeedback();
         }
-        
+
+        // Radar Chart Rendering
+        function renderRadarChart(prediction) {
+            const canvas = document.getElementById('radar-chart');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const radius = Math.min(width, height) / 2 - 40;
+
+            // Clear canvas
+            ctx.clearRect(0, 0, width, height);
+
+            const labels = ['warmth', 'bright', 'texture', 'valence', 'arousal', 'intense', 'geometry', 'color'];
+            const numAxes = labels.length;
+            const angleStep = (2 * Math.PI) / numAxes;
+
+            // Draw background circles
+            ctx.strokeStyle = 'rgba(106, 142, 127, 0.2)';
+            ctx.lineWidth = 1;
+            for (let i = 1; i <= 4; i++) {
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, (radius * i) / 4, 0, 2 * Math.PI);
+                ctx.stroke();
+            }
+
+            // Draw axes and labels
+            ctx.strokeStyle = 'rgba(106, 142, 127, 0.3)';
+            ctx.fillStyle = '#6a8e7f';
+            ctx.font = '11px Funnel Sans, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            for (let i = 0; i < numAxes; i++) {
+                const angle = i * angleStep - Math.PI / 2;
+                const x = centerX + Math.cos(angle) * radius;
+                const y = centerY + Math.sin(angle) * radius;
+
+                // Draw axis line
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.lineTo(x, y);
+                ctx.stroke();
+
+                // Draw label
+                const labelX = centerX + Math.cos(angle) * (radius + 20);
+                const labelY = centerY + Math.sin(angle) * (radius + 20);
+                ctx.fillText(labels[i], labelX, labelY);
+            }
+
+            // Draw data polygon
+            ctx.beginPath();
+            for (let i = 0; i < numAxes; i++) {
+                const angle = i * angleStep - Math.PI / 2;
+                const value = prediction[i];
+                const x = centerX + Math.cos(angle) * radius * value;
+                const y = centerY + Math.sin(angle) * radius * value;
+
+                if (i === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            }
+            ctx.closePath();
+
+            // Fill with gradient
+            ctx.fillStyle = 'rgba(83, 89, 154, 0.3)';
+            ctx.fill();
+            ctx.strokeStyle = '#53599a';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Draw data points
+            for (let i = 0; i < numAxes; i++) {
+                const angle = i * angleStep - Math.PI / 2;
+                const value = prediction[i];
+                const x = centerX + Math.cos(angle) * radius * value;
+                const y = centerY + Math.sin(angle) * radius * value;
+
+                ctx.beginPath();
+                ctx.arc(x, y, 4, 0, 2 * Math.PI);
+                ctx.fillStyle = interpolateColor(dimensionColors[dimensions[i]], value);
+                ctx.fill();
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            }
+        }
+
+        // Feedback Functions
+        let feedbackGiven = false;
+
+        function resetFeedback() {
+            feedbackGiven = false;
+            document.querySelectorAll('.feedback-btn').forEach(btn => btn.classList.remove('selected'));
+            document.getElementById('comment-box').classList.remove('visible');
+            document.getElementById('feedback-comment').value = '';
+            document.getElementById('feedback-status').textContent = '';
+        }
+
+        function toggleComment() {
+            document.getElementById('comment-box').classList.toggle('visible');
+        }
+
+        function submitFeedback(type) {
+            if (feedbackGiven) return;
+
+            // Visual feedback
+            document.querySelectorAll('.feedback-btn').forEach(btn => btn.classList.remove('selected'));
+            document.querySelector(`.feedback-btn.${type}`).classList.add('selected');
+
+            // Save feedback
+            saveFeedback(type, null);
+        }
+
+        function submitComment() {
+            const comment = document.getElementById('feedback-comment').value.trim();
+            if (!comment) {
+                document.getElementById('feedback-status').textContent = 'please enter a comment';
+                return;
+            }
+
+            saveFeedback('comment', comment);
+            document.getElementById('comment-box').classList.remove('visible');
+        }
+
+        async function saveFeedback(type, comment) {
+            feedbackGiven = true;
+
+            const feedback = {
+                timestamp: new Date().toISOString(),
+                text: currentText,
+                prediction: currentPrediction,
+                dimensions: {},
+                feedback_type: type,
+                comment: comment
+            };
+
+            // Add dimension values
+            dimensions.forEach((dim, i) => {
+                feedback.dimensions[dim] = currentPrediction[i];
+            });
+
+            // Store locally first
+            const stored = JSON.parse(localStorage.getItem('vibe_feedback') || '[]');
+            stored.push(feedback);
+            localStorage.setItem('vibe_feedback', JSON.stringify(stored));
+
+            // Try to send to backend
+            try {
+                await fetch('https://vibe-engine-production.up.railway.app/api/feedback', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(feedback)
+                });
+                document.getElementById('feedback-status').textContent = 'thanks for your feedback!';
+            } catch (e) {
+                // Backend might not have endpoint yet, that's ok
+                document.getElementById('feedback-status').textContent = 'feedback saved locally';
+            }
+        }
+
+        // Export feedback for training (accessible via console)
+        window.exportFeedback = function() {
+            const data = localStorage.getItem('vibe_feedback') || '[]';
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'vibe_feedback.json';
+            a.click();
+        };
+
         // Allow Enter key to submit
         document.getElementById('textInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
