@@ -431,14 +431,18 @@ const domainTranslations = {
 
 // Initialize the application
 function initApp() {
+  console.log("initApp started");
+  
   // Initialize DOM elements first
   initializeElements();
+  console.log("Elements initialized:", !!elements);
   
   // Initialize canvas contexts
   initializeContexts();
   
   // Set up event listeners
   setupEventListeners();
+  console.log("Event listeners set up");
   
   // Adjust canvas size to fit container
   resizeCanvases();
@@ -616,41 +620,67 @@ function setupEventListeners() {
   // Text input processing
   if (elements.vibeTextInput && elements.processTextButton) {
     // Process button click
-    elements.processTextButton.addEventListener('click', () => {
+    elements.processTextButton.addEventListener('click', function(e) {
+      console.log("Process button clicked", e);
+      e.preventDefault();
+      e.stopPropagation();
       processVibeText();
     });
     
-    // Enter key in text input
-    elements.vibeTextInput.addEventListener('keydown', (e) => {
+    // Enter key in text input - direct handler to improve reliability
+    elements.vibeTextInput.addEventListener('keydown', function(e) {
       if (e.key === 'Enter') {
+        console.log("Enter key pressed in text input");
+        e.preventDefault();
         processVibeText();
       }
+    });
+    
+    // Add debug logging to verify elements are correctly found
+    console.log("Text input initialized:", elements.vibeTextInput.id);
+    console.log("Process button initialized:", elements.processTextButton.id);
+    console.log("Button event listeners attached successfully");
+  } else {
+    console.error("Critical elements missing:", {
+      vibeTextInput: !!elements.vibeTextInput,
+      processTextButton: !!elements.processTextButton
     });
   }
   
   // Preset button click events
-  elements.presetButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      const presetName = button.dataset.preset;
-      if (presets[presetName]) {
-        loadPreset(presetName);
-        
-        // Update active preset button
-        elements.presetButtons.forEach(btn => {
-          btn.classList.remove('active');
-        });
-        button.classList.add('active');
-        
-        // If we're not on the visualizer view, switch to it
-        if (appState.currentView !== 'visualizer') {
-          const visualizerButton = document.querySelector('.nav-button[data-view="visualizer"]');
-          if (visualizerButton) {
-            visualizerButton.click();
+  if (elements.presetButtons && elements.presetButtons.length > 0) {
+    console.log(`Found ${elements.presetButtons.length} preset buttons`);
+    elements.presetButtons.forEach((button, index) => {
+      console.log(`Setting up listener for preset button ${index}: ${button.dataset.preset}`);
+      button.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log(`Preset button clicked: ${button.dataset.preset}`);
+        const presetName = button.dataset.preset;
+        if (presets[presetName]) {
+          loadPreset(presetName);
+          
+          // Update active preset button
+          elements.presetButtons.forEach(btn => {
+            btn.classList.remove('active');
+          });
+          button.classList.add('active');
+          
+          // If we're not on the visualizer view, switch to it
+          if (appState.currentView !== 'visualizer') {
+            const visualizerButton = document.querySelector('.nav-button[data-view="visualizer"]');
+            if (visualizerButton) {
+              visualizerButton.click();
+            }
           }
+        } else {
+          console.error(`Preset ${presetName} not found. Available presets:`, Object.keys(presets));
         }
-      }
+      });
     });
-  });
+  } else {
+    console.error("No preset buttons found");
+  }
   
   // Visualization tab switching
   elements.tabButtons.forEach(button => {
@@ -1620,20 +1650,45 @@ function showNotification(message, type = 'info') {
   
   document.body.appendChild(notification);
   
-  // Auto-dismiss after 3 seconds
+  // Add an X button for manual closing
+  const closeButton = document.createElement('span');
+  closeButton.innerHTML = '&times;';
+  closeButton.style.position = 'absolute';
+  closeButton.style.top = '5px';
+  closeButton.style.right = '10px';
+  closeButton.style.cursor = 'pointer';
+  closeButton.style.fontSize = '18px';
+  closeButton.addEventListener('click', () => {
+    notification.remove();
+  });
+  notification.appendChild(closeButton);
+  notification.style.position = 'relative';
+  notification.style.paddingRight = '30px';
+  
+  // Auto-dismiss after 5 seconds
   setTimeout(() => {
-    notification.classList.add('fade-out');
+    notification.style.opacity = '0';
+    notification.style.transform = 'translateY(10px)';
+    notification.style.transition = 'opacity 0.3s, transform 0.3s';
     setTimeout(() => {
       notification.remove();
     }, 300);
-  }, 3000);
+  }, 5000);
 }
 
 // Process ANY text input to affect sliders based on semantic meaning
 function processVibeText() {
-  if (!elements.vibeTextInput) return;
+  // Debug logging to see if function is being called
+  console.log("processVibeText function called");
+  
+  if (!elements || !elements.vibeTextInput) {
+    console.error("Vibe text input element not found or elements not initialized");
+    console.error("Elements state:", elements);
+    return;
+  }
   
   const text = elements.vibeTextInput.value.trim();
+  console.log("Input text:", text);
   
   if (!text) {
     showNotification('Please enter a vibe description', 'warning');
@@ -1641,9 +1696,287 @@ function processVibeText() {
   }
   
   console.log(`Processing text: "${text}"`);
+  showNotification(`Processing: "${text}"`, 'info');
   
-  // Generate vibe parameters from input text - ANY text will work!
-  const vibeValues = generateVibeParametersFromText(text);
+  // Generate vibe parameters from input text using the enhanced semantic analyzer
+  let vibeValues;
+  
+  if (window.semanticAnalyzer) {
+    // Use the enhanced semantic analyzer which includes vibe proximity
+    vibeValues = window.semanticAnalyzer.analyzeText(text);
+    
+    // Show special notification for direct value matches
+    const directMatchDetails = [];
+    
+    // Get attribute values for common dimensions
+    const attributes = ['color', 'texture', 'warmth', 'brightness', 'pace', 'rhythm', 'intensity', 'flow'];
+    
+    attributes.forEach(attr => {
+      if (window.semanticAnalyzer) {
+        const result = window.semanticAnalyzer.getAttributeValue(text, attr);
+        if (result && result.confidence > 0.8) {
+          // Format the value nicely
+          let formattedValue;
+          if (attr === 'color' && result.value !== null) {
+            formattedValue = `hue ${result.value}°`;
+          } else if (result.value !== null) {
+            formattedValue = result.value.toString();
+          } else {
+            formattedValue = 'neutral';
+          }
+          
+          directMatchDetails.push(`${attr}: ${formattedValue}`);
+        }
+      }
+    });
+    
+    // Show special notification for direct matches
+    if (directMatchDetails.length > 0) {
+      const detailsText = directMatchDetails.join(', ');
+      showNotification(`Detected specific values: ${detailsText}`, 'success');
+      
+      // Update semantic results display
+      const semanticResultsEl = document.getElementById('semantic-results');
+      if (semanticResultsEl) {
+        // Clear previous results
+        semanticResultsEl.innerHTML = '';
+        
+        // Add animated heading with icon
+        const heading = document.createElement('h4');
+        heading.innerHTML = '<span class="semantic-icon">🔍</span> Semantic Analysis Results';
+        semanticResultsEl.appendChild(heading);
+        
+        // Add detected matches
+        attributes.forEach(attr => {
+          if (window.semanticAnalyzer) {
+            const result = window.semanticAnalyzer.getAttributeValue(text, attr);
+            if (result && result.value !== null) {
+              // Format the value nicely
+              let displayValue;
+              if (attr === 'color' && result.value !== null) {
+                // For color, show the color name and hue value
+                const hue = result.value;
+                // Find the color name based on hue value
+                let colorName = 'unknown';
+                for (const [name, value] of Object.entries(window.semanticAnalyzer.attributeValueMaps.color)) {
+                  if (value === hue) {
+                    colorName = name;
+                    break;
+                  }
+                }
+                displayValue = `${colorName} (${hue}°)`;
+                
+                // Add CSS color display if possible
+                if (hue !== null) {
+                  const hslColor = `hsl(${hue}, 70%, 50%)`;
+                  displayValue = `<span style="color: ${hslColor}; font-weight: bold;">${colorName}</span> (${hue}°)`;
+                }
+              } else {
+                // For other attributes, map numerical values to human-readable names
+                const valueMap = window.semanticAnalyzer.attributeValueMaps[attr];
+                if (valueMap && result.value !== null) {
+                  // Find term for this value
+                  let termName = null;
+                  for (const [term, value] of Object.entries(valueMap)) {
+                    if (value === result.value) {
+                      termName = term;
+                      break;
+                    }
+                  }
+                  
+                  // If found a term, use it, otherwise use the numeric value
+                  if (termName) {
+                    displayValue = termName;
+                  } else {
+                    // Check for scales that might need custom handling
+                    if (attr === 'valence') {
+                      // Valence is special with negative values
+                      const normalizedValue = result.value + 5; // Convert -5...5 to 0...10
+                      const isPositive = result.value > 0;
+                      const isNegative = result.value < 0;
+                      const intensity = Math.abs(result.value);
+                      
+                      if (isPositive) {
+                        displayValue = intensity > 3 ? "very positive" : "positive";
+                      } else if (isNegative) {
+                        displayValue = intensity > 3 ? "very negative" : "negative";
+                      } else {
+                        displayValue = "neutral";
+                      }
+                    } else {
+                      // Generic 0-10 scale with polarities
+                      // Comprehensive sample value mappings for all common attributes
+                      const sampleValueMappings = {
+                        'texture': {
+                          0: 'smooth', 1: 'silky', 2: 'satin', 3: 'soft', 
+                          4: 'fine', 5: 'moderate', 6: 'patterned',
+                          7: 'textured', 8: 'rough', 9: 'rugged', 10: 'jagged'
+                        },
+                        'brightness': {
+                          0: 'dark', 1: 'shadowy', 2: 'dim', 3: 'dusky', 4: 'muted',
+                          5: 'medium', 6: 'clear', 7: 'light', 
+                          8: 'bright', 9: 'luminous', 10: 'brilliant'
+                        },
+                        'warmth': {
+                          0: 'icy', 1: 'cold', 2: 'cool', 3: 'fresh', 4: 'mild',
+                          5: 'neutral', 6: 'lukewarm', 7: 'warm', 
+                          8: 'toasty', 9: 'hot', 10: 'burning'
+                        },
+                        'pace': {
+                          0: 'still', 1: 'slow', 2: 'leisurely', 3: 'relaxed', 4: 'gentle',
+                          5: 'moderate', 6: 'flowing', 7: 'brisk',
+                          8: 'rapid', 9: 'fast', 10: 'frantic'
+                        },
+                        'rhythm': {
+                          0: 'linear', 1: 'direct', 2: 'progressive', 3: 'sequential', 
+                          4: 'structured', 5: 'mixed', 6: 'varied',
+                          7: 'wave', 8: 'oscillating', 9: 'circular', 10: 'cyclical'
+                        },
+                        'intensity': {
+                          0: 'ambient', 1: 'subtle', 2: 'gentle', 3: 'mild', 4: 'light',
+                          5: 'moderate', 6: 'firm', 7: 'strong',
+                          8: 'powerful', 9: 'forceful', 10: 'intense'
+                        },
+                        'flow': {
+                          0: 'flowing', 1: 'smooth', 2: 'steady', 3: 'consistent',
+                          4: 'even', 5: 'regular', 6: 'periodic',
+                          7: 'rhythmic', 8: 'beating', 9: 'throbbing', 10: 'pulsing'
+                        },
+                        'arousal': {
+                          0: 'calming', 1: 'peaceful', 2: 'relaxing', 3: 'gentle',
+                          4: 'mild', 5: 'moderate', 6: 'engaging',
+                          7: 'active', 8: 'energetic', 9: 'exciting', 10: 'stimulating'
+                        },
+                        'abstraction': {
+                          0: 'concrete', 1: 'specific', 2: 'tangible', 3: 'practical',
+                          4: 'grounded', 5: 'representational', 6: 'interpretive',
+                          7: 'symbolic', 8: 'conceptual', 9: 'theoretical', 10: 'abstract'
+                        }
+                      };
+                      
+                      // Fallback polarities for any attributes not in the mapping
+                      const fallbackPolarities = {
+                        'texture': ['smooth', 'rough'],
+                        'brightness': ['dark', 'bright'],
+                        'warmth': ['cool', 'warm'],
+                        'pace': ['slow', 'fast'],
+                        'rhythm': ['linear', 'cyclical'],
+                        'intensity': ['ambient', 'intense'],
+                        'flow': ['flowing', 'pulsing'],
+                        'arousal': ['calming', 'stimulating'],
+                        'abstraction': ['concrete', 'abstract']
+                      };
+                      
+                      // First try to find exact term in the mapping
+                      if (sampleValueMappings[attr] && sampleValueMappings[attr][result.value] !== undefined) {
+                        displayValue = sampleValueMappings[attr][result.value];
+                      } else {
+                        // Find closest term within mappings
+                        let closestTerm = null;
+                        let closestDiff = Infinity;
+                        
+                        if (sampleValueMappings[attr]) {
+                          for (const [valueStr, term] of Object.entries(sampleValueMappings[attr])) {
+                            const value = parseInt(valueStr);
+                            const diff = Math.abs(value - result.value);
+                            if (diff < closestDiff) {
+                              closestDiff = diff;
+                              closestTerm = term;
+                            }
+                          }
+                        }
+                        
+                        // If we found a close term within 1.5 points, use it
+                        if (closestTerm && closestDiff <= 1.5) {
+                          displayValue = closestTerm;
+                        } else {
+                          // Otherwise use polarities with intensity
+                          let lowPole, highPole;
+                          
+                          // Use fallback polarities
+                          if (fallbackPolarities[attr]) {
+                            lowPole = fallbackPolarities[attr][0];
+                            highPole = fallbackPolarities[attr][1];
+                          } else {
+                            // If still not found, use generic terms
+                            lowPole = "low";
+                            highPole = "high";
+                          }
+                          
+                          // Map value to descriptive range
+                          const normalizedValue = result.value / 10; // Assume 0-10 scale, normalize to 0-1
+                          if (normalizedValue > 0.85) {
+                            displayValue = `extremely ${highPole}`;
+                          } else if (normalizedValue > 0.7) {
+                            displayValue = `very ${highPole}`;
+                          } else if (normalizedValue > 0.6) {
+                            displayValue = `${highPole}`;
+                          } else if (normalizedValue > 0.4) {
+                            displayValue = `moderate`;
+                          } else if (normalizedValue > 0.3) {
+                            displayValue = `${lowPole}`;
+                          } else if (normalizedValue > 0.15) {
+                            displayValue = `very ${lowPole}`;
+                          } else {
+                            displayValue = `extremely ${lowPole}`;
+                          }
+                        }
+                      }
+                      } else {
+                        // Just use the number if no mapping is available
+                        displayValue = result.value.toString();
+                      }
+                    }
+                  }
+                } else {
+                  displayValue = result.value.toString();
+                }
+              }
+              
+              // Create match element with improved styling
+              const matchEl = document.createElement('div');
+              matchEl.className = 'semantic-match';
+              
+              // Add visual indicator for confidence
+              const confidencePercent = Math.round(result.confidence * 100);
+              const confidenceClass = confidencePercent > 90 ? 'high-confidence' : 
+                                      confidencePercent > 70 ? 'medium-confidence' : 'low-confidence';
+              
+              // Style based on attribute type
+              let attrClass = '';
+              if (attr === 'color') attrClass = 'color-attribute';
+              else if (['texture', 'brightness', 'warmth'].includes(attr)) attrClass = 'sensory-attribute';
+              else if (['pace', 'rhythm'].includes(attr)) attrClass = 'temporal-attribute';
+              else if (['intensity', 'flow'].includes(attr)) attrClass = 'energy-attribute';
+              else attrClass = 'other-attribute';
+              
+              matchEl.classList.add(attrClass);
+              
+              // Add HTML with confidence indicator
+              matchEl.innerHTML = `
+                <span class="attr-name">${attr}:</span> 
+                <span class="attr-value">${displayValue}</span>
+                <span class="attr-confidence ${confidenceClass}">${confidencePercent}%</span>
+              `;
+              semanticResultsEl.appendChild(matchEl);
+            }
+          }
+        });
+        
+        // Show the results container
+        semanticResultsEl.classList.add('has-results');
+      }
+    } else {
+      // Hide semantic results if no direct matches
+      const semanticResultsEl = document.getElementById('semantic-results');
+      if (semanticResultsEl) {
+        semanticResultsEl.classList.remove('has-results');
+      }
+    }
+  } else {
+    // Fall back to the standard algorithm
+    vibeValues = generateVibeParametersFromText(text);
+  }
   
   // Apply the generated values to all sliders
   Object.entries(vibeValues).forEach(([param, value]) => {
@@ -1667,8 +2000,8 @@ function processVibeText() {
     renderVisualizations();
   }
   
-  // Show confirmation
-  showNotification(`Generated vibe from text meaning`, 'success');
+  // Show general confirmation
+  showNotification(`Generated vibe from text description`, 'success');
   
   // Switch to visualizer view to show the changes
   const visualizerButton = document.querySelector('.nav-button[data-view="visualizer"]');
@@ -2158,5 +2491,132 @@ function lerp(a, b, t) {
   return a + t * (b - a);
 }
 
+// Expose critical functions globally to ensure they're available to inline scripts
+window.processVibeText = function() {
+  console.log("GLOBAL processVibeText called directly");
+  
+  const textInput = document.getElementById('vibe-text-input');
+  if (!textInput) {
+    console.error("Vibe text input element not found");
+    alert("Error: Text input field not found.");
+    return;
+  }
+  
+  const text = textInput.value.trim();
+  console.log("Input text:", text);
+  
+  if (!text) {
+    alert('Please enter a vibe description');
+    return;
+  }
+  
+  // Show processing indication
+  console.log(`Processing text: "${text}"`);
+  
+  // Check if semantic analyzer is loaded
+  if (!window.semanticAnalyzer || !window.semanticAnalyzer.analyzeText) {
+    console.error("Semantic analyzer not loaded or missing analyzeText function");
+    alert("Error: Semantic analyzer not loaded. Please refresh the page.");
+    return;
+  }
+  
+  try {
+    // Generate vibe parameters from input text
+    const vibeValues = window.semanticAnalyzer.analyzeText(text);
+    console.log("Generated vibe values:", vibeValues);
+    
+    // Update state with new values
+    Object.keys(vibeValues).forEach(key => {
+      if (vibeState[key] !== undefined) {
+        vibeState[key] = vibeValues[key];
+      }
+    });
+    
+    // Update UI sliders
+    Object.keys(vibeState).forEach(key => {
+      const slider = document.getElementById(key.replace(/([A-Z])/g, '-$1').toLowerCase());
+      if (slider) {
+        slider.value = vibeState[key];
+      }
+    });
+    
+    // Update description
+    const descEl = document.getElementById('vibe-description-text');
+    if (descEl) {
+      descEl.textContent = `Custom vibe generated from "${text}". Adjust sliders to fine-tune.`;
+    }
+    
+    // Attempt to update visualizations
+    try {
+      if (typeof renderVisualizations === 'function') {
+        renderVisualizations();
+      } else {
+        console.warn("renderVisualizations function not available");
+      }
+    } catch (visError) {
+      console.error("Error rendering visualizations:", visError);
+    }
+    
+    console.log("Text processing completed successfully");
+  } catch (error) {
+    console.error("Error processing text:", error);
+    alert("Sorry, there was an error processing your text. Please try again.");
+  }
+};
+
+window.loadPreset = function(presetName) {
+  console.log(`GLOBAL loadPreset called for: ${presetName}`);
+  
+  if (!presets[presetName]) {
+    console.error(`Preset "${presetName}" not found!`);
+    return;
+  }
+  
+  try {
+    // Apply preset values to state
+    Object.keys(presets[presetName]).forEach(key => {
+      if (key !== 'description') {
+        vibeState[key] = presets[presetName][key];
+      }
+    });
+    
+    // Update UI
+    Object.keys(vibeState).forEach(key => {
+      const slider = document.getElementById(key.replace(/([A-Z])/g, '-$1').toLowerCase());
+      if (slider) {
+        slider.value = vibeState[key];
+      }
+    });
+    
+    // Update description
+    const descEl = document.getElementById('vibe-description-text');
+    if (descEl && presets[presetName].description) {
+      descEl.textContent = presets[presetName].description;
+    }
+    
+    // Update visualizations
+    if (typeof renderVisualizations === 'function') {
+      renderVisualizations();
+    } else {
+      console.warn("renderVisualizations function not available");
+    }
+    
+    console.log(`Preset "${presetName}" applied successfully`);
+  } catch (error) {
+    console.error("Error applying preset:", error);
+    alert("Sorry, there was an error applying the preset. Please try again.");
+  }
+};
+
 // Start the application when DOM is loaded
-document.addEventListener('DOMContentLoaded', initApp);
+document.addEventListener('DOMContentLoaded', () => {
+  console.log("DOM fully loaded, initializing app...");
+  
+  try {
+    initApp();
+    console.log("App initialization completed successfully");
+  } catch (error) {
+    console.error("ERROR DURING APP INITIALIZATION:", error);
+    alert("There was a problem initializing the app. Please check console for details and try refreshing.");
+  }
+});

@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Synthesize the Vibe!</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400..900;1,400..900&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&family=Syne:wght@400..800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Road+Rage&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <header>
+      <h1 class="funky-title">Synthesize the vibe!</h1>
+      <p class="subtitle">Interactive vibe engineering system</p>
+      
+      <nav class="main-nav">
+        <button class="nav-button active" data-view="test-model">Test the Model</button>
+        <button class="nav-button" data-view="about">About</button>
+        <button class="nav-button" data-view="old-version">Old Version</button>
+      </nav>
+    </header>
+
+    <main>
+      <div class="view-container active" id="test-model-view">
+        <h2>Test the Model</h2>
+        <p class="section-intro">Test our vibe translation model with your own inputs.</p>
+        
+        <div class="model-test-container">
+          <div class="test-input-section">
+            <h3>Input Your Vibe</h3>
+            <textarea 
+              id="model-test-input" 
+              placeholder="Describe a vibe, scene, or feeling you want to translate..."
+              rows="4"
+              style="width: 100%; padding: 1rem; border: 2px solid var(--color-border); border-radius: 8px; font-family: inherit;"
+            ></textarea>
+            <button id="test-model-button" class="action-button" style="margin-top: 1rem;">Analyze Vibe</button>
+          </div>
+          
+          <div class="test-results-section" style="margin-top: 2rem;">
+            <h3>Model Analysis</h3>
+            <div id="model-test-results" style="min-height: 200px; padding: 1rem; background: var(--color-surface); border-radius: 8px; border: 1px solid var(--color-border);">
+              <p style="color: var(--color-text-light); font-style: italic;">Enter a description above and click "Analyze Vibe" to see the model's interpretation.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="view-container" id="about-view">
+        <h2>About the Vibe Engine</h2>
+        <p class="section-intro">An exploration of systematizing aesthetic experiences while respecting their ineffable qualities.</p>
+        
+        <div class="about-content">
+          <div class="about-section">
+            <h3>Core Concept</h3>
+            <p>The Vibe Engine is a framework for analyzing, deconstructing, and translating aesthetic experiences—or "vibes"—across different domains. It provides a structured vocabulary and mathematical model for what is often considered difficult to articulate.</p>
+            
+            <p>Rather than claiming to fully capture the ineffable quality of vibes, the engine acknowledges the tension between systematization and the resistance of vibes to categorization. It offers a tool for exploring this boundary—a map that is useful while recognizing it is not the territory.</p>
+          </div>
+          
+          <div class="about-section">
+            <h3>The Taxonomy</h3>
+            <p>Our approach uses seven core dimensions, each with multiple attributes:</p>
+            <ul>
+              <li><strong>Temporal:</strong> How time is perceived (pace, rhythm, density)</li>
+              <li><strong>Energy:</strong> The quality and flow of energy (intensity, flow, stability)</li>
+              <li><strong>Emotional:</strong> Feeling qualities (valence, arousal, intimacy)</li>
+              <li><strong>Conceptual:</strong> Intellectual dimensions (abstraction, temporal framing, complexity)</li>
+              <li><strong>Spatial:</strong> Physical perception (openness, geometry, depth)</li>
+              <li><strong>Cultural:</strong> Contextual elements (historicity, specificity, subculture)</li>
+              <li><strong>Sensory:</strong> Direct sensory elements (texture, brightness, warmth, color)</li>
+            </ul>
+          </div>
+          
+          <div class="about-section">
+            <h3>Cross-Domain Translation</h3>
+            <p>One of the core capabilities is translating vibes between different domains while preserving their essential qualities. This allows, for example, finding the spatial environment that best matches the vibe of a musical piece.</p>
+          </div>
+          
+          <div class="about-section">
+            <h3>Implementation Notes</h3>
+            <p>This demonstration showcases the March 2025 implementation, featuring:</p>
+            <ul>
+              <li>Direct DOM manipulation for improved performance</li>
+              <li>Procedurally generated textures instead of external assets</li>
+              <li>Responsive interface with immediate visual feedback</li>
+              <li>Simplified code structure with clear data flow</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="view-container" id="old-version-view">
+        <h2>Original Vibe Engine Interface</h2>
+        <p class="section-intro">The complete original demo with all interactive features.</p>
+        
+        <div class="old-version-nav">
+          <button class="nav-button active" data-old-view="explorer">Vibe Explorer</button>
+          <button class="nav-button" data-old-view="visualizer">Visualizer</button>
+          <button class="nav-button" data-old-view="translator">Cross-Domain Translator</button>
+          <button class="nav-button" data-old-view="examples">Domain Examples</button>
+        </div>
+        
+        <div class="old-view-container active" id="old-explorer-view">
+          <div class="unified-interface">
+            <!-- Prominent Text Input Section at the top -->
+            <div class="top-text-input-section">
+              <h3>Describe Your Vibe</h3>
+              <div class="text-input-container">
+                <input type="text" id="vibe-text-input" placeholder="e.g., 'cozy winter evening by the fireplace' or 'blue and rough texture'" class="vibe-text-input">
+                <button id="process-text-button" class="action-button">Generate Vibe</button>
+              </div>
+              <p class="text-input-hint">Enter descriptive words or specific attributes (color, texture, brightness, etc.)</p>
+              <div id="semantic-results" class="semantic-results"></div>
+            </div>
+
+          <div class="top-row">
+            <div class="dimension-group">
+              <h3>Temporal Dimensions</h3>
+              <div class="slider-container">
+                <label for="temporal-pace">Pace</label>
+                <input type="range" id="temporal-pace" min="0" max="100" value="50" class="slider">
+                <div class="slider-labels">
+                  <span>Slow</span>
+                  <span>Fast</span>
+                </div>
+              </div>
+              
+              <div class="slider-container">
+                <label for="temporal-rhythm">Rhythm</label>
+                <input type="range" id="temporal-rhythm" min="0" max="100" value="50" class="slider">
+                <div class="slider-labels">
+                  <span>Regular</span>
+                  <span>Irregular</span>
+                </div>
+              </div>
+              
+              <div class="slider-container">
+                <label for="temporal-density">Density</label>
+                <input type="range" id="temporal-density" min="0" max="100" value="50" class="slider">
+                <div class="slider-labels">
+                  <span>Sparse</span>
+                  <span>Dense</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="dimension-group">
+              <h3>Energy Dimensions</h3>
+              <div class="slider-container">
+                <label for="energy-intensity">Intensity</label>
+                <input type="range" id="energy-intensity" min="0" max="100" value="50" class="slider">
+                <div class="slider-labels">
+                  <span>Calm</span>
+                  <span>Energetic</span>
+                </div>
+              </div>
+              
+              <div class="slider-container">
+                <label for="energy-flow">Flow</label>
+                <input type="range" id="energy-flow" min="0" max="100" value="50" class="slider">
+                <div class="slider-labels">
+                  <span>Staccato</span>
+                  <span>Flowing</span>
+                </div>
+              </div>
+              
+              <div class="slider-container">
+                <label for="energy-stability">Stability</label>
+                <input type="range" id="energy-stability" min="0" max="100" value="50" class="slider">
+                <div class="slider-labels">
+                  <span>Chaotic</span>
+                  <span>Stable</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="dimension-group">
+              <h3>Sensory Dimensions</h3>
+              <div class="slider-container">
+                <label for="sensory-brightness">Brightness</label>
+                <input type="range" id="sensory-brightness" min="0" max="100" value="50" class="slider">
+                <div class="slider-labels">
+                  <span>Dark</span>
+                  <span>Bright</span>
+                </div>
+              </div>
+              
+              <div class="slider-container">
+                <label for="sensory-warmth">Warmth</label>
+                <input type="range" id="sensory-warmth" min="0" max="100" value="50" class="slider">
+                <div class="slider-labels">
+                  <span>Cool</span>
+                  <span>Warm</span>
+                </div>
+              </div>
+              
+              <div class="slider-container">
+                <label for="sensory-texture">Texture</label>
+                <input type="range" id="sensory-texture" min="0" max="100" value="50" class="slider">
+                <div class="slider-labels">
+                  <span>Smooth</span>
+                  <span>Rough</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bottom-row">
+            <div class="presets-section">
+              <h3>Preset Vibes</h3>
+              <div class="preset-buttons">
+                <button class="preset-button" data-preset="cozyReading">Cozy Reading</button>
+                <button class="preset-button" data-preset="urbanNightclub">Nightclub</button>
+                <button class="preset-button" data-preset="zenGarden">Zen Garden</button>
+                <button class="preset-button" data-preset="startupOffice">Office</button>
+                <button class="preset-button" data-preset="jazzClub">Jazz Club</button>
+                <button class="preset-button" data-preset="tropicalBeach">Beach</button>
+              </div>
+            </div>
+            
+            <div class="vibe-description">
+              <h3>Current Vibe</h3>
+              <p id="vibe-description-text">
+                A balanced, neutral vibe with moderate energy and pace. Adjust the sliders to see how different parameters affect the visualization.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="view-container" id="visualizer-view">
+        <h2>Vibe Visualizer</h2>
+        <p class="section-intro">Visual representation of the current vibe parameters across different visualization methods.</p>
+        
+        <div class="visualization-section">
+          <div class="viz-controls">
+            <div class="tab-buttons">
+              <button class="tab-button active" data-tab="color-texture">Color & Texture</button>
+              <button class="tab-button" data-tab="radar-chart">Radar Chart</button>
+              <button class="tab-button" data-tab="domain-translation">Domain Translation</button>
+            </div>
+          </div>
+          
+          <div class="visualization-container">
+            <div class="visualization-tab active" id="color-texture-tab">
+              <div class="canvas-container">
+                <canvas id="color-canvas" width="800" height="600"></canvas>
+                <canvas id="texture-canvas" width="800" height="600"></canvas>
+              </div>
+            </div>
+            
+            <div class="visualization-tab" id="radar-chart-tab">
+              <div class="radar-container">
+                <canvas id="radar-chart" width="700" height="600"></canvas>
+              </div>
+            </div>
+
+            <div class="visualization-tab" id="domain-translation-tab">
+              <div class="domain-translation-container">
+                <div class="domain-grid">
+                  <div class="domain-card" id="music-domain">
+                    <h4>Music Domain</h4>
+                    <div id="music-description"></div>
+                  </div>
+                  <div class="domain-card" id="space-domain">
+                    <h4>Spatial Domain</h4>
+                    <div id="space-description"></div>
+                  </div>
+                  <div class="domain-card" id="visual-domain">
+                    <h4>Visual Domain</h4>
+                    <div id="visual-description"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="view-container" id="translator-view">
+        <h2>Cross-Domain Vibe Translator</h2>
+        <p class="section-intro">Translate vibes between different sensory domains while preserving their essential qualities.</p>
+        
+        <div class="translator-container">
+          <div class="translator-source">
+            <h3>Source Domain</h3>
+            <select id="source-domain-select">
+              <option value="music">Music</option>
+              <option value="space">Spatial Environment</option>
+              <option value="visual">Visual Art</option>
+              <option value="custom">Custom Vibe</option>
+            </select>
+            
+            <div id="source-presets-container">
+              <h4>Select Source Example</h4>
+              <select id="source-preset-select">
+                <option value="">Choose an example...</option>
+                <!-- Options populated by JavaScript -->
+              </select>
+              
+              <div class="source-preview" id="source-preview">
+                <p>Select a source to see its description</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="translator-arrow">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="48" height="48">
+              <path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          
+          <div class="translator-target">
+            <h3>Target Domain</h3>
+            <select id="target-domain-select">
+              <option value="space">Spatial Environment</option>
+              <option value="visual">Visual Art</option>
+              <option value="music">Music</option>
+            </select>
+            
+            <button id="translate-button" class="action-button">Translate Vibe</button>
+          </div>
+        </div>
+        
+        <div class="translation-result" id="translation-result">
+          <h3>Translation Result</h3>
+          <p class="translation-instructions">Select source and target domains, then click "Translate Vibe" to see the result.</p>
+          <div id="result-content" class="hidden"></div>
+        </div>
+      </div>
+
+      <div class="view-container" id="examples-view">
+        <h2>Domain-Specific Vibe Examples</h2>
+        <p class="section-intro">Explore curated examples across different domains to understand how vibes translate between them.</p>
+        
+        <div class="domain-tabs">
+          <button class="domain-tab active" data-domain="music">Music</button>
+          <button class="domain-tab" data-domain="space">Spatial</button>
+          <button class="domain-tab" data-domain="visual">Visual</button>
+        </div>
+        
+        <div class="domain-content active" id="music-content">
+          <div class="examples-grid">
+            <div class="example-card" data-example="jazz">
+              <h3>Jazz Quartet</h3>
+              <p>Warm, intimate jazz in a small venue with acoustic instruments and improvisational elements.</p>
+              <button class="load-example-button">Load Example</button>
+            </div>
+            <div class="example-card" data-example="classical">
+              <h3>Classical Orchestra</h3>
+              <p>Refined, structured, and dynamic classical performance with rich instrumentation and formal composition.</p>
+              <button class="load-example-button">Load Example</button>
+            </div>
+            <div class="example-card" data-example="edm">
+              <h3>Electronic Dance Music</h3>
+              <p>High-energy, dense electronic music with repetitive patterns, synthetic sounds, and intense rhythmic elements.</p>
+              <button class="load-example-button">Load Example</button>
+            </div>
+            <div class="example-card" data-example="ambient">
+              <h3>Ambient Electronic</h3>
+              <p>Spacious, atmospheric electronic soundscapes with minimal rhythmic structure and a focus on texture and timbre.</p>
+              <button class="load-example-button">Load Example</button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="domain-content" id="space-content">
+          <div class="examples-grid">
+            <div class="example-card" data-example="forest">
+              <h3>Scandinavian Forest</h3>
+              <p>Cool, serene woodland with filtered light, organic textures, and a sense of peaceful isolation.</p>
+              <button class="load-example-button">Load Example</button>
+            </div>
+            <div class="example-card" data-example="cafe">
+              <h3>Busy Café</h3>
+              <p>Warm, energetic space with multiple conversations, movement, the scent of coffee, and background music.</p>
+              <button class="load-example-button">Load Example</button>
+            </div>
+            <div class="example-card" data-example="library">
+              <h3>Academic Library</h3>
+              <p>Quiet, structured environment with high ceilings, organized knowledge, diffused lighting, and muted sounds.</p>
+              <button class="load-example-button">Load Example</button>
+            </div>
+            <div class="example-card" data-example="beach">
+              <h3>Tropical Beach</h3>
+              <p>Bright, open setting with rhythmic waves, warm temperatures, organic textures, and a sense of freedom.</p>
+              <button class="load-example-button">Load Example</button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="domain-content" id="visual-content">
+          <div class="examples-grid">
+            <div class="example-card" data-example="impressionist">
+              <h3>Impressionist Painting</h3>
+              <p>Soft, textured brushwork with vibrant colors capturing momentary impressions of light and movement.</p>
+              <button class="load-example-button">Load Example</button>
+            </div>
+            <div class="example-card" data-example="bauhaus">
+              <h3>Bauhaus Design</h3>
+              <p>Clean, geometric, and functional with primary colors, balanced composition, and minimal ornamentation.</p>
+              <button class="load-example-button">Load Example</button>
+            </div>
+            <div class="example-card" data-example="cyberpunk">
+              <h3>Cyberpunk Aesthetic</h3>
+              <p>High contrast, neon-lit urban imagery with technological elements, grit, and futuristic elements in decay.</p>
+              <button class="load-example-button">Load Example</button>
+            </div>
+            <div class="example-card" data-example="ukiyoe">
+              <h3>Ukiyo-e Prints</h3>
+              <p>Flat, stylized compositions with clear outlines, block colors, and a balance of detail and simplicity.</p>
+              <button class="load-example-button">Load Example</button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Add more old version views here... -->
+        <div class="old-view-container" id="old-visualizer-view">
+          <h3>Visualizer (Original)</h3>
+          <p>The original visualization interface would go here.</p>
+        </div>
+        
+        <div class="old-view-container" id="old-translator-view">
+          <h3>Cross-Domain Translator (Original)</h3>
+          <p>The original translator interface would go here.</p>
+        </div>
+        
+        <div class="old-view-container" id="old-examples-view">
+          <h3>Domain Examples (Original)</h3>
+          <p>The original examples interface would go here.</p>
+        </div>
+      </div>
+    </main>
+    
+    <footer>
+      <p>Created by Erin Saint Gull | <a href="https://curate.beauty" target="_blank">curate.beauty</a></p>
+    </footer>
+  </div>
+
+  <!-- ULTRA FIX: direct inline script that doesn't depend on anything -->
+  <script>
+    // Define presets directly in this script to avoid dependency on app.js
+    const EMERGENCY_PRESETS = {
+      cozyReading: {
+        temporalPace: 20,
+        temporalRhythm: 30,
+        temporalDensity: 40,
+        energyIntensity: 25,
+        energyFlow: 65,
+        energyStability: 85,
+        sensoryBrightness: 60,
+        sensoryWarmth: 85,
+        sensoryTexture: 70,
+        description: "A warm, cozy vibe with slow pacing and high stability."
+      },
+      urbanNightclub: {
+        temporalPace: 85,
+        temporalRhythm: 80,
+        temporalDensity: 90,
+        energyIntensity: 95,
+        energyFlow: 70,
+        energyStability: 30,
+        sensoryBrightness: 20,
+        sensoryWarmth: 60,
+        sensoryTexture: 50,
+        description: "A high-energy, pulsing vibe with rapid rhythm and intense sensory experience."
+      },
+      zenGarden: {
+        temporalPace: 15,
+        temporalRhythm: 40,
+        temporalDensity: 30,
+        energyIntensity: 20,
+        energyFlow: 80,
+        energyStability: 90,
+        sensoryBrightness: 70,
+        sensoryWarmth: 50,
+        sensoryTexture: 60,
+        description: "A serene, balanced vibe with minimal distractions and a focus on natural elements."
+      },
+      startupOffice: {
+        temporalPace: 70,
+        temporalRhythm: 60,
+        temporalDensity: 75,
+        energyIntensity: 75,
+        energyFlow: 55,
+        energyStability: 45,
+        sensoryBrightness: 85,
+        sensoryWarmth: 35,
+        sensoryTexture: 30,
+        description: "A bright, dynamic vibe with medium-high energy and a modern aesthetic."
+      },
+      jazzClub: {
+        temporalPace: 50,
+        temporalRhythm: 70,
+        temporalDensity: 65,
+        energyIntensity: 60,
+        energyFlow: 80,
+        energyStability: 40,
+        sensoryBrightness: 30,
+        sensoryWarmth: 75,
+        sensoryTexture: 55,
+        description: "A warm, sophisticated vibe with improvisational rhythms."
+      },
+      tropicalBeach: {
+        temporalPace: 30,
+        temporalRhythm: 60,
+        temporalDensity: 40,
+        energyIntensity: 50,
+        energyFlow: 85,
+        energyStability: 70,
+        sensoryBrightness: 90,
+        sensoryWarmth: 80,
+        sensoryTexture: 65,
+        description: "A bright, relaxed vibe with natural rhythms and warm tones."
+      }
+    };
+
+    // Emergency standalone functions that don't rely on app.js
+    function emergencyLoadPreset(presetName) {
+      console.log(`EMERGENCY loadPreset called for: ${presetName}`);
+      
+      // First try to use the global method if available
+      if (typeof window.loadPreset === 'function') {
+        console.log("Using global loadPreset");
+        window.loadPreset(presetName);
+        return;
+      }
+      
+      // If global method not available, use emergency implementation
+      console.log("Using EMERGENCY preset implementation");
+      
+      const preset = EMERGENCY_PRESETS[presetName];
+      if (!preset) {
+        console.error(`Preset "${presetName}" not found in emergency presets!`);
+        alert(`Preset "${presetName}" not found. Try another preset.`);
+        return;
+      }
+      
+      try {
+        // Apply preset values to sliders
+        Object.keys(preset).forEach(key => {
+          if (key !== 'description') {
+            // Format the ID from camelCase to kebab-case
+            const sliderId = key.replace(/([A-Z])/g, '-$1').toLowerCase();
+            const slider = document.getElementById(sliderId);
+            if (slider) {
+              slider.value = preset[key];
+              console.log(`Set ${sliderId} to ${preset[key]}`);
+            }
+          }
+        });
+        
+        // Update description
+        const descEl = document.getElementById('vibe-description-text');
+        if (descEl && preset.description) {
+          descEl.textContent = preset.description;
+        }
+        
+        console.log(`Emergency preset "${presetName}" applied successfully`);
+      } catch (error) {
+        console.error("Error applying emergency preset:", error);
+        alert("Sorry, there was an error applying the preset.");
+      }
+    }
+    
+    // Ultra-resilient function that doesn't depend on global state
+    function emergencyProcessText() {
+      console.log("EMERGENCY processVibeText function called");
+      
+      // First try to use the global method if available
+      if (typeof window.processVibeText === 'function') {
+        console.log("Using global processVibeText");
+        window.processVibeText();
+        return;
+      }
+      
+      // If global method not available, use basic implementation
+      console.log("Using EMERGENCY text processing implementation");
+      
+      try {
+        const textInput = document.getElementById('vibe-text-input');
+        if (!textInput) {
+          console.error("Text input not found");
+          alert("Error: Could not find the text input field.");
+          return;
+        }
+        
+        const text = textInput.value.trim();
+        if (!text) {
+          alert("Please enter a vibe description");
+          return;
+        }
+        
+        // Very basic text processing - just set random slider values
+        alert(`Processing: "${text}"\n\nApplying basic vibe approximation.`);
+        
+        // Generate pseudo-random values based on text
+        const hash = Array.from(text).reduce((acc, char) => {
+          return acc + char.charCodeAt(0);
+        }, 0);
+        
+        const sliderIds = [
+          'temporal-pace', 'temporal-rhythm', 'temporal-density',
+          'energy-intensity', 'energy-flow', 'energy-stability',
+          'sensory-brightness', 'sensory-warmth', 'sensory-texture'
+        ];
+        
+        // Set sliders based on hash
+        sliderIds.forEach((id, index) => {
+          const slider = document.getElementById(id);
+          if (slider) {
+            // Generate a value between 20 and 80 based on text hash
+            const seedValue = (hash + index * 7) % 100;
+            const value = 20 + (seedValue % 61); // 20-80 range
+            slider.value = value;
+          }
+        });
+        
+        // Update description
+        const descEl = document.getElementById('vibe-description-text');
+        if (descEl) {
+          descEl.textContent = `Custom vibe inspired by "${text}". Adjust sliders to fine-tune.`;
+        }
+        
+        console.log("Emergency text processing completed");
+      } catch (error) {
+        console.error("Error in emergency text processing:", error);
+        alert("Sorry, there was an error processing your text.");
+      }
+    }
+
+    // Setup direct button handlers immediately (before DOM is ready)
+    function setupEmergencyHandlers() {
+      console.log("ULTRA FIX: Setting up emergency handlers");
+      
+      // Process text button
+      const processButton = document.getElementById('process-text-button');
+      if (processButton) {
+        processButton.onclick = function(e) {
+          if (e) e.preventDefault();
+          console.log("ULTRA-DIRECT click handler for Generate button");
+          emergencyProcessText();
+        };
+        
+        processButton.style.border = "2px solid #3eaa6d";
+        console.log("Applied emergency handler to process button");
+      }
+      
+      // Preset buttons
+      const presetButtons = document.querySelectorAll('.preset-button');
+      presetButtons.forEach(button => {
+        const presetName = button.dataset.preset;
+        button.onclick = function(e) {
+          if (e) e.preventDefault();
+          console.log(`ULTRA-DIRECT click on preset: ${presetName}`);
+          emergencyLoadPreset(presetName);
+        };
+        
+        button.style.border = "2px solid #3eaa6d";
+        console.log(`Applied emergency handler to preset: ${presetName}`);
+      });
+      
+      console.log("ULTRA FIX: Emergency handlers setup complete");
+    }
+    
+    // Try to run our handler setup immediately
+    if (document.readyState === "complete" || document.readyState === "interactive") {
+      console.log("Document already interactive/complete, running now");
+      setTimeout(setupEmergencyHandlers, 0);
+    } else {
+      // If document not ready, set up both event handlers
+      document.addEventListener("DOMContentLoaded", function() {
+        console.log("DOMContentLoaded fired, running handlers");
+        setupEmergencyHandlers();
+      });
+      
+      // And also try with a small delay as backup
+      setTimeout(function() {
+        console.log("Backup timeout handler running");
+        setupEmergencyHandlers();
+      }, 500);
+    }
+    
+    // Also attach to window load as final fallback
+    window.addEventListener("load", function() {
+      console.log("Window load event, running final check");
+      setupEmergencyHandlers();
+    });
+
+    // New tab navigation for the simplified interface
+    function setupNewTabNavigation() {
+      console.log("Setting up new tab navigation");
+      
+      // Main navigation (Test Model, About, Old Version)
+      const mainNavButtons = document.querySelectorAll('.main-nav .nav-button');
+      const viewContainers = document.querySelectorAll('.view-container');
+      
+      mainNavButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const targetView = button.dataset.view;
+          console.log(`Switching to view: ${targetView}`);
+          
+          // Update active button
+          mainNavButtons.forEach(btn => btn.classList.remove('active'));
+          button.classList.add('active');
+          
+          // Show correct view
+          viewContainers.forEach(container => container.classList.remove('active'));
+          const targetContainer = document.getElementById(`${targetView}-view`);
+          if (targetContainer) {
+            targetContainer.classList.add('active');
+          }
+        });
+      });
+      
+      // Old version sub-navigation
+      const oldNavButtons = document.querySelectorAll('.old-version-nav .nav-button');
+      const oldViewContainers = document.querySelectorAll('.old-view-container');
+      
+      oldNavButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const targetOldView = button.dataset.oldView;
+          console.log(`Switching to old view: ${targetOldView}`);
+          
+          // Update active button in old nav
+          oldNavButtons.forEach(btn => btn.classList.remove('active'));
+          button.classList.add('active');
+          
+          // Show correct old view
+          oldViewContainers.forEach(container => container.classList.remove('active'));
+          const targetOldContainer = document.getElementById(`old-${targetOldView}-view`);
+          if (targetOldContainer) {
+            targetOldContainer.classList.add('active');
+          }
+        });
+      });
+      
+      // Test the Model functionality
+      const testModelButton = document.getElementById('test-model-button');
+      const modelTestInput = document.getElementById('model-test-input');
+      const modelTestResults = document.getElementById('model-test-results');
+      
+      if (testModelButton && modelTestInput && modelTestResults) {
+        testModelButton.addEventListener('click', function() {
+          const inputText = modelTestInput.value.trim();
+          if (!inputText) {
+            alert('Please enter a vibe description to analyze.');
+            return;
+          }
+          
+          console.log(`Testing model with input: ${inputText}`);
+          
+          // Show loading state
+          testModelButton.textContent = 'Analyzing...';
+          testModelButton.disabled = true;
+          
+          // Simulate model analysis
+          setTimeout(() => {
+            const analysisResult = generateVibeAnalysis(inputText);
+            modelTestResults.innerHTML = analysisResult;
+            
+            // Reset button
+            testModelButton.textContent = 'Analyze Vibe';
+            testModelButton.disabled = false;
+          }, 1500);
+        });
+      }
+    }
+    
+    // Generate mock vibe analysis
+    function generateVibeAnalysis(text) {
+      const words = text.toLowerCase().split(' ');
+      
+      // Simple keyword-based analysis
+      let temporal = 50, energy = 50, sensory = 50;
+      let mood = "neutral", dominantFeatures = [];
+      
+      // Analyze keywords
+      if (words.some(w => ['fast', 'quick', 'rapid', 'speedy'].includes(w))) {
+        temporal += 30;
+        dominantFeatures.push("high temporal pace");
+      }
+      if (words.some(w => ['slow', 'calm', 'peaceful', 'gentle'].includes(w))) {
+        temporal -= 30;
+        dominantFeatures.push("low temporal pace");
+      }
+      if (words.some(w => ['bright', 'vibrant', 'glowing', 'luminous'].includes(w))) {
+        sensory += 25;
+        dominantFeatures.push("high brightness");
+      }
+      if (words.some(w => ['dark', 'dim', 'shadowy', 'muted'].includes(w))) {
+        sensory -= 25;
+        dominantFeatures.push("low brightness");
+      }
+      if (words.some(w => ['energetic', 'intense', 'powerful', 'strong'].includes(w))) {
+        energy += 25;
+        dominantFeatures.push("high energy intensity");
+      }
+      if (words.some(w => ['warm', 'cozy', 'comfortable', 'soft'].includes(w))) {
+        mood = "warm and inviting";
+        dominantFeatures.push("warm sensory quality");
+      }
+      if (words.some(w => ['cool', 'cold', 'crisp', 'sharp'].includes(w))) {
+        mood = "cool and crisp";
+        dominantFeatures.push("cool sensory quality");
+      }
+      
+      // Clamp values
+      temporal = Math.max(0, Math.min(100, temporal));
+      energy = Math.max(0, Math.min(100, energy));
+      sensory = Math.max(0, Math.min(100, sensory));
+      
+      return `
+        <div style="background: var(--color-surface); padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
+          <h4 style="color: var(--color-primary); margin-bottom: 1rem;">Analysis Results</h4>
+          <p><strong>Input:</strong> "${text}"</p>
+          <p><strong>Detected Mood:</strong> ${mood}</p>
+          <p><strong>Key Features:</strong> ${dominantFeatures.length ? dominantFeatures.join(', ') : 'balanced characteristics'}</p>
+        </div>
+        
+        <div style="background: var(--color-surface); padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem;">
+          <h4 style="color: var(--color-primary); margin-bottom: 1rem;">Dimensional Analysis</h4>
+          <div style="margin-bottom: 0.5rem;">
+            <strong>Temporal Pace:</strong> ${temporal}/100 
+            <div style="background: var(--color-border); height: 8px; border-radius: 4px; overflow: hidden; margin-top: 4px;">
+              <div style="background: var(--color-primary); height: 100%; width: ${temporal}%; transition: width 0.3s;"></div>
+            </div>
+          </div>
+          <div style="margin-bottom: 0.5rem;">
+            <strong>Energy Intensity:</strong> ${energy}/100
+            <div style="background: var(--color-border); height: 8px; border-radius: 4px; overflow: hidden; margin-top: 4px;">
+              <div style="background: var(--color-secondary); height: 100%; width: ${energy}%; transition: width 0.3s;"></div>
+            </div>
+          </div>
+          <div style="margin-bottom: 0.5rem;">
+            <strong>Sensory Brightness:</strong> ${sensory}/100
+            <div style="background: var(--color-border); height: 8px; border-radius: 4px; overflow: hidden; margin-top: 4px;">
+              <div style="background: var(--color-accent); height: 100%; width: ${sensory}%; transition: width 0.3s;"></div>
+            </div>
+          </div>
+        </div>
+        
+        <div style="background: var(--color-surface); padding: 1.5rem; border-radius: 8px;">
+          <h4 style="color: var(--color-primary); margin-bottom: 1rem;">Cross-Domain Translation</h4>
+          <p><strong>Musical equivalent:</strong> ${generateMusicalEquivalent(temporal, energy, sensory)}</p>
+          <p><strong>Spatial equivalent:</strong> ${generateSpatialEquivalent(temporal, energy, sensory)}</p>
+          <p><strong>Visual equivalent:</strong> ${generateVisualEquivalent(temporal, energy, sensory)}</p>
+        </div>
+      `;
+    }
+    
+    function generateMusicalEquivalent(temporal, energy, sensory) {
+      if (temporal < 30 && energy < 40) return "Ambient/drone music with sustained tones";
+      if (temporal > 70 && energy > 70) return "Fast-paced electronic dance music";
+      if (energy < 30 && sensory > 60) return "Soft acoustic folk with gentle melodies";
+      if (energy > 60 && temporal < 50) return "Heavy rock with strong rhythmic emphasis";
+      return "Mid-tempo indie music with balanced instrumentation";
+    }
+    
+    function generateSpatialEquivalent(temporal, energy, sensory) {
+      if (temporal < 30 && energy < 40) return "Quiet library or meditation space";
+      if (temporal > 70 && energy > 70) return "Busy urban plaza or vibrant marketplace";
+      if (energy < 30 && sensory > 60) return "Cozy home interior with warm lighting";
+      if (energy > 60 && temporal < 50) return "Industrial workshop or active studio";
+      return "Comfortable café or communal workspace";
+    }
+    
+    function generateVisualEquivalent(temporal, energy, sensory) {
+      if (temporal < 30 && energy < 40) return "Minimalist composition with muted colors";
+      if (temporal > 70 && energy > 70) return "Dynamic abstract expressionist painting";
+      if (energy < 30 && sensory > 60) return "Soft impressionist landscape with warm tones";
+      if (energy > 60 && temporal < 50) return "Bold geometric design with contrasting colors";
+      return "Balanced contemporary artwork with moderate contrast";
+    }
+    
+    // Setup everything when DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+      setupNewTabNavigation();
+    });
+  </script>
+  
+  <script src="semantic_analyzer.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

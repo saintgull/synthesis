@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>vibe engine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&family=Funnel+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Funnel Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-weight: 300;
+            background-color: #f8f4f2; /* Isabelline */
+            color: #1c1c1c; /* Eerie black */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 2rem auto;
+        }
+        
+        h1 {
+            font-family: 'Funnel Display', serif;
+            font-size: 3rem;
+            font-weight: 400;
+            margin-bottom: 2rem;
+            color: #53599a; /* Ultra Violet */
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 1rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-family: 'Funnel Sans', inherit;
+            font-weight: 300;
+            resize: vertical;
+            background: transparent;
+            transition: border-color 0.3s;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: #53599a;
+        }
+        
+        button {
+            margin-top: 1rem;
+            padding: 0.75rem 2rem;
+            background: #53599a;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        button:hover {
+            background: #434a80;
+        }
+        
+        .results {
+            margin-top: 3rem;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        
+        .results.visible {
+            opacity: 1;
+        }
+        
+        .dimension {
+            margin-bottom: 2rem;
+        }
+        
+        .dimension-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .dimension-name {
+            color: #6a8e7f; /* Viridian */
+        }
+        
+        .dimension-value {
+            color: #1c1c1c;
+            font-weight: 500;
+        }
+        
+        .slider-container {
+            position: relative;
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .slider-fill {
+            height: 100%;
+            background: #6a8e7f; /* Default to Viridian */
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 4px;
+        }
+        
+        .slider-fill.low {
+            background: #da627d; /* Blush for low values */
+        }
+        
+        .slider-fill.high {
+            background: #53599a; /* Ultra Violet for high values */
+        }
+        
+        .loading {
+            display: none;
+            margin-top: 1rem;
+            color: #6a8e7f;
+        }
+        
+        .error {
+            display: none;
+            margin-top: 1rem;
+            color: #da627d;
+        }
+        
+        .confidence {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #6a8e7f;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        
+        .confidence.visible {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>vibe engine</h1>
+        
+        <textarea id="textInput" placeholder="type concept here"></textarea>
+        <button onclick="analyzeVibe()">analyze</button>
+        
+        <div class="loading">analyzing...</div>
+        <div class="error" id="errorMsg"></div>
+        <div class="confidence" id="confidence"></div>
+        
+        <div class="results" id="results">
+            <div class="dimension">
+                <div class="dimension-label">
+                    <span class="dimension-name">warmth</span>
+                    <span class="dimension-value" id="warmth-value">-</span>
+                </div>
+                <div class="slider-container">
+                    <div class="slider-fill" id="warmth-slider"></div>
+                </div>
+            </div>
+            
+            <div class="dimension">
+                <div class="dimension-label">
+                    <span class="dimension-name">brightness</span>
+                    <span class="dimension-value" id="brightness-value">-</span>
+                </div>
+                <div class="slider-container">
+                    <div class="slider-fill" id="brightness-slider"></div>
+                </div>
+            </div>
+            
+            <div class="dimension">
+                <div class="dimension-label">
+                    <span class="dimension-name">texture</span>
+                    <span class="dimension-value" id="texture-value">-</span>
+                </div>
+                <div class="slider-container">
+                    <div class="slider-fill" id="texture-slider"></div>
+                </div>
+            </div>
+            
+            <div class="dimension">
+                <div class="dimension-label">
+                    <span class="dimension-name">valence</span>
+                    <span class="dimension-value" id="valence-value">-</span>
+                </div>
+                <div class="slider-container">
+                    <div class="slider-fill" id="valence-slider"></div>
+                </div>
+            </div>
+            
+            <div class="dimension">
+                <div class="dimension-label">
+                    <span class="dimension-name">arousal</span>
+                    <span class="dimension-value" id="arousal-value">-</span>
+                </div>
+                <div class="slider-container">
+                    <div class="slider-fill" id="arousal-slider"></div>
+                </div>
+            </div>
+            
+            <div class="dimension">
+                <div class="dimension-label">
+                    <span class="dimension-name">intensity</span>
+                    <span class="dimension-value" id="intensity-value">-</span>
+                </div>
+                <div class="slider-container">
+                    <div class="slider-fill" id="intensity-slider"></div>
+                </div>
+            </div>
+            
+            <div class="dimension">
+                <div class="dimension-label">
+                    <span class="dimension-name">geometry</span>
+                    <span class="dimension-value" id="geometry-value">-</span>
+                </div>
+                <div class="slider-container">
+                    <div class="slider-fill" id="geometry-slider"></div>
+                </div>
+            </div>
+            
+            <div class="dimension">
+                <div class="dimension-label">
+                    <span class="dimension-name">color temperature</span>
+                    <span class="dimension-value" id="color_temperature-value">-</span>
+                </div>
+                <div class="slider-container">
+                    <div class="slider-fill" id="color_temperature-slider"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const dimensions = ['warmth', 'brightness', 'texture', 'valence', 'arousal', 'intensity', 'geometry', 'color_temperature'];
+        
+        // Replace with your Railway backend URL after deployment
+        const API_URL = window.location.hostname === 'localhost' 
+            ? 'http://localhost:8888/api/analyze' 
+            : 'https://your-app.railway.app/api/analyze';
+        
+        async function analyzeVibe() {
+            const text = document.getElementById('textInput').value.trim();
+            if (!text) return;
+            
+            // Show loading
+            document.querySelector('.loading').style.display = 'block';
+            document.querySelector('.error').style.display = 'none';
+            document.getElementById('results').classList.remove('visible');
+            document.getElementById('confidence').classList.remove('visible');
+            
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text })
+                });
+                
+                if (!response.ok) throw new Error('Analysis failed');
+                
+                const data = await response.json();
+                displayResults(data.prediction);
+                
+                // Show confidence if available
+                if (data.confidence) {
+                    const confEl = document.getElementById('confidence');
+                    confEl.textContent = `confidence: ${Math.round(data.confidence * 100)}%`;
+                    confEl.classList.add('visible');
+                }
+                
+            } catch (error) {
+                document.querySelector('.error').style.display = 'block';
+                document.getElementById('errorMsg').textContent = 'Connection error. Please try again.';
+            } finally {
+                document.querySelector('.loading').style.display = 'none';
+            }
+        }
+        
+        function displayResults(prediction) {
+            dimensions.forEach((dim, i) => {
+                const value = prediction[i];
+                const percentage = Math.round(value * 100);
+                
+                // Update value display
+                document.getElementById(`${dim}-value`).textContent = `${percentage}%`;
+                
+                // Update slider
+                const slider = document.getElementById(`${dim}-slider`);
+                slider.style.width = `${percentage}%`;
+                
+                // Color based on value
+                slider.classList.remove('low', 'high');
+                if (value < 0.33) {
+                    slider.classList.add('low');
+                } else if (value > 0.67) {
+                    slider.classList.add('high');
+                }
+            });
+            
+            // Show results
+            document.getElementById('results').classList.add('visible');
+        }
+        
+        // Allow Enter key to submit
+        document.getElementById('textInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                analyzeVibe();
+            }
+        });
+    </script>
+</body>
+</html>

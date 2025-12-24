@@ -133,17 +133,8 @@
         
         .slider-fill {
             height: 100%;
-            background: #6a8e7f; /* Default to Viridian */
-            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), background 0.5s ease;
             border-radius: 4px;
-        }
-        
-        .slider-fill.low {
-            background: #da627d; /* Blush for low values */
-        }
-        
-        .slider-fill.high {
-            background: #53599a; /* Ultra Violet for high values */
         }
         
         .loading {
@@ -383,7 +374,7 @@
     <script>
         const dimensions = ['warmth', 'brightness', 'texture', 'valence', 'arousal', 'intensity', 'geometry', 'color_temperature'];
         
-        // Railway backend URL - always use production for v9
+        // Railway backend URL - always use production
         const API_URL = 'https://vibe-engine-production.up.railway.app/api/analyze';
         
         async function analyzeVibe() {
@@ -473,31 +464,121 @@
             return interpretations[dimension][0];
         }
         
+        // Color spectrums for each dimension (array of [hue, saturation, lightness] stops)
+        // Each dimension has colors that semantically match its meaning
+        const dimensionColors = {
+            // warmth: ice blue -> cyan -> yellow -> orange -> red
+            warmth: [
+                [200, 90, 45],  // ice blue (0%)
+                [180, 70, 50],  // cyan (25%)
+                [60, 80, 50],   // yellow (50%)
+                [30, 90, 50],   // orange (75%)
+                [0, 85, 45]     // red (100%)
+            ],
+            // brightness: deep purple/black -> gray -> bright yellow
+            brightness: [
+                [270, 40, 15],  // very dark purple (0%)
+                [270, 20, 35],  // dark (25%)
+                [0, 0, 50],     // neutral gray (50%)
+                [45, 70, 60],   // light gold (75%)
+                [50, 100, 65]   // bright yellow (100%)
+            ],
+            // texture: smooth silk purple -> neutral -> rough earth brown
+            texture: [
+                [280, 60, 60],  // silk purple (0%)
+                [260, 40, 55],  // soft lavender (25%)
+                [30, 20, 50],   // neutral tan (50%)
+                [25, 50, 45],   // rough tan (75%)
+                [20, 60, 35]    // earth brown (100%)
+            ],
+            // valence: sad blue/purple -> neutral -> happy gold/yellow
+            valence: [
+                [240, 50, 35],  // deep sad blue (0%)
+                [220, 40, 45],  // melancholy blue (25%)
+                [200, 20, 50],  // neutral (50%)
+                [45, 70, 55],   // warm happy (75%)
+                [50, 90, 60]    // joyful gold (100%)
+            ],
+            // arousal: calm deep blue -> neutral -> energetic red/orange
+            arousal: [
+                [220, 60, 35],  // deep calm blue (0%)
+                [200, 50, 45],  // calm blue (25%)
+                [180, 30, 50],  // neutral teal (50%)
+                [30, 80, 55],   // energetic orange (75%)
+                [5, 90, 50]     // frenzied red (100%)
+            ],
+            // intensity: whisper soft lavender -> neutral -> overwhelming magenta
+            intensity: [
+                [270, 30, 70],  // soft lavender (0%)
+                [260, 35, 60],  // gentle purple (25%)
+                [280, 40, 50],  // moderate purple (50%)
+                [310, 70, 45],  // strong magenta (75%)
+                [330, 90, 40]   // overwhelming deep pink (100%)
+            ],
+            // geometry: organic soft green -> neutral -> sharp geometric cyan
+            geometry: [
+                [120, 50, 45],  // organic green (0%)
+                [140, 40, 50],  // soft green (25%)
+                [180, 30, 50],  // neutral teal (50%)
+                [200, 60, 45],  // angular blue (75%)
+                [195, 80, 40]   // sharp cyan (100%)
+            ],
+            // color_temperature: ice blue -> cyan -> neutral -> orange -> fire red
+            color_temperature: [
+                [210, 90, 50],  // ice blue (0%)
+                [195, 80, 55],  // cool cyan (25%)
+                [60, 20, 55],   // neutral warm (50%)
+                [30, 90, 55],   // orange (75%)
+                [5, 95, 50]     // fire red (100%)
+            ]
+        };
+
+        function interpolateColor(colors, value) {
+            // Apply slight S-curve to make mid-range differences more visible
+            const curved = value < 0.5
+                ? 2 * value * value
+                : 1 - Math.pow(-2 * value + 2, 2) / 2;
+
+            const t = Math.max(0, Math.min(1, curved));
+            const numStops = colors.length;
+            const segment = t * (numStops - 1);
+            const index = Math.floor(segment);
+            const localT = segment - index;
+
+            if (index >= numStops - 1) {
+                const [h, s, l] = colors[numStops - 1];
+                return `hsl(${h}, ${s}%, ${l}%)`;
+            }
+
+            const [h1, s1, l1] = colors[index];
+            const [h2, s2, l2] = colors[index + 1];
+
+            // Interpolate each component
+            const h = h1 + (h2 - h1) * localT;
+            const s = s1 + (s2 - s1) * localT;
+            const l = l1 + (l2 - l1) * localT;
+
+            return `hsl(${h}, ${s}%, ${l}%)`;
+        }
+
         function displayResults(prediction) {
             dimensions.forEach((dim, i) => {
                 const value = prediction[i];
                 const percentage = Math.round(value * 100);
-                
+
                 // Update value display
                 document.getElementById(`${dim}-value`).textContent = `${percentage}%`;
-                
+
                 // Update interpretation
                 const interpretation = getInterpretation(dim, value);
                 document.getElementById(`${dim}-interpretation`).textContent = interpretation;
-                
-                // Update slider
+
+                // Update slider with spectrum color
                 const slider = document.getElementById(`${dim}-slider`);
                 slider.style.width = `${percentage}%`;
-                
-                // Color based on value
-                slider.classList.remove('low', 'high');
-                if (value < 0.33) {
-                    slider.classList.add('low');
-                } else if (value > 0.67) {
-                    slider.classList.add('high');
-                }
+                slider.style.background = interpolateColor(dimensionColors[dim], value);
             });
-            
+
             // Show results
             document.getElementById('results').classList.add('visible');
         }
